@@ -7,22 +7,22 @@
 
 ### Import
 
-- [ ] **IMPT-01**: User can drag-and-drop video and audio files onto the editor canvas
-- [ ] **IMPT-02**: User can use a file picker to import video and audio files
+- [x] **IMPT-01**: User can drag-and-drop video and audio files onto the editor canvas
+- [x] **IMPT-02**: User can use a file picker to import video and audio files
 
 ### Timeline
 
 - [ ] **TIME-01**: User can see imported video clips on a single video track in the timeline
 - [ ] **TIME-02**: User can see imported audio clips on a single audio track in the timeline
-- [ ] **TIME-03**: User can trim a clip by dragging its left or right edge
-- [ ] **TIME-04**: User can split a clip at a point using a blade tool
-- [ ] **TIME-05**: User can delete a clip from the timeline
-- [ ] **TIME-06**: User can reorder clips by dragging within a track
+- [x] **TIME-03**: User can trim a clip by dragging its left or right edge
+- [x] **TIME-04**: User can split a clip at a point using a blade tool
+- [x] **TIME-05**: User can delete a clip from the timeline
+- [x] **TIME-06**: User can reorder clips by dragging within a track
 
 ### Undo / Redo
 
-- [ ] **UNDO-01**: User can undo the last clip operation via Cmd+Z
-- [ ] **UNDO-02**: User can redo an undone operation via Cmd+Shift+Z
+- [x] **UNDO-01**: User can undo the last clip operation via Cmd+Z
+- [x] **UNDO-02**: User can redo an undone operation via Cmd+Shift+Z
 
 ### Preview
 
@@ -84,16 +84,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| IMPT-01 | Phase 2 | Pending |
-| IMPT-02 | Phase 2 | Pending |
+| IMPT-01 | Phase 2 | Complete |
+| IMPT-02 | Phase 2 | Complete |
 | TIME-01 | Phase 2 | Pending |
 | TIME-02 | Phase 2 | Pending |
-| TIME-03 | Phase 2 | Pending |
-| TIME-04 | Phase 2 | Pending |
-| TIME-05 | Phase 2 | Pending |
-| TIME-06 | Phase 2 | Pending |
-| UNDO-01 | Phase 2 | Pending |
-| UNDO-02 | Phase 2 | Pending |
+| TIME-03 | Phase 2 | Complete |
+| TIME-04 | Phase 2 | Complete |
+| TIME-05 | Phase 2 | Complete |
+| TIME-06 | Phase 2 | Complete |
+| UNDO-01 | Phase 2 | Complete |
+| UNDO-02 | Phase 2 | Complete |
 | PREV-01 | Phase 2 | Pending |
 | CLIP-01 | Phase 3 | Pending |
 | CLIP-02 | Phase 3 | Pending |

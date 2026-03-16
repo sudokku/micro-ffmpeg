@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { useStore } from './index'
+import { useStore, resetColorIndex } from './index'
 import type { Clip } from './types'
 
 const mockClip: Clip = {
@@ -11,7 +11,8 @@ const mockClip: Clip = {
   endTime: 10,
   trimStart: 0,
   trimEnd: 0,
-  thumbnailUrl: null,
+  color: '#3b82f6',
+  thumbnailUrls: [],
 }
 
 beforeEach(() => {
@@ -28,6 +29,8 @@ beforeEach(() => {
   })
   // Clear temporal history
   useStore.temporal.getState().clear()
+  // Reset color rotation counter so each test starts from CLIP_COLORS[0]
+  resetColorIndex()
 })
 
 describe('Zustand store shape', () => {
@@ -80,5 +83,186 @@ describe('Zundo partialize', () => {
     useStore.setState({ clips: { c1: mockClip } })
     useStore.temporal.getState().undo()
     expect(useStore.getState().clips).toEqual({})
+  })
+})
+
+describe('Store actions', () => {
+  const mockFile = new File([], 'test.mp4')
+  const mockDuration = 10
+
+  it('addClip creates a clip in clips record with correct fields', () => {
+    useStore.getState().addClip(mockFile, 'video', mockDuration)
+    const { clips } = useStore.getState()
+    const clipIds = Object.keys(clips)
+    expect(clipIds).toHaveLength(1)
+    const clip = clips[clipIds[0]]
+    expect(clip.trackId).toBe('video')
+    expect(clip.startTime).toBe(0)
+    expect(clip.endTime).toBe(mockDuration)
+    expect(clip.color).toBe('#3b82f6')
+    expect(clip.thumbnailUrls).toEqual([])
+  })
+
+  it('addClip appends clip id to tracks.video.clipIds', () => {
+    useStore.getState().addClip(mockFile, 'video', mockDuration)
+    const { clips, tracks } = useStore.getState()
+    const clipId = Object.keys(clips)[0]
+    expect(tracks.video.clipIds).toContain(clipId)
+  })
+
+  it('addClip appends clip id to tracks.audio.clipIds', () => {
+    useStore.getState().addClip(mockFile, 'audio', mockDuration)
+    const { clips, tracks } = useStore.getState()
+    const clipId = Object.keys(clips)[0]
+    expect(tracks.audio.clipIds).toContain(clipId)
+  })
+
+  it('second addClip on same track starts where first clip ends', () => {
+    useStore.getState().addClip(mockFile, 'video', 5)
+    useStore.getState().addClip(mockFile, 'video', 8)
+    const { clips, tracks } = useStore.getState()
+    const [firstId, secondId] = tracks.video.clipIds
+    expect(clips[firstId].startTime).toBe(0)
+    expect(clips[firstId].endTime).toBe(5)
+    expect(clips[secondId].startTime).toBe(5)
+    expect(clips[secondId].endTime).toBe(13)
+  })
+
+  it('addClip assigns rotating colors — clip 1 gets CLIP_COLORS[0], clip 2 gets CLIP_COLORS[1]', () => {
+    useStore.getState().addClip(mockFile, 'video', 5)
+    useStore.getState().addClip(mockFile, 'video', 5)
+    const { clips, tracks } = useStore.getState()
+    const [firstId, secondId] = tracks.video.clipIds
+    expect(clips[firstId].color).toBe('#3b82f6')
+    expect(clips[secondId].color).toBe('#8b5cf6')
+  })
+
+  it('moveClip updates clip.startTime and clip.endTime', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().moveClip(clipId, 5, 15)
+    const clip = useStore.getState().clips[clipId]
+    expect(clip.startTime).toBe(5)
+    expect(clip.endTime).toBe(15)
+  })
+
+  it('trimClip updates clip.startTime and clip.endTime', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().trimClip(clipId, 2, 8)
+    const clip = useStore.getState().clips[clipId]
+    expect(clip.startTime).toBe(2)
+    expect(clip.endTime).toBe(8)
+  })
+
+  it('splitClip creates two clips: left and right covering the original range', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const originalId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().splitClip(originalId, 4)
+    const { clips, tracks } = useStore.getState()
+    expect(tracks.video.clipIds).toHaveLength(2)
+    const [leftId, rightId] = tracks.video.clipIds
+    expect(clips[leftId].startTime).toBe(0)
+    expect(clips[leftId].endTime).toBe(4)
+    expect(clips[rightId].startTime).toBe(4)
+    expect(clips[rightId].endTime).toBe(10)
+  })
+
+  it('splitClip removes original clip from clips record and track clipIds', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const originalId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().splitClip(originalId, 4)
+    const { clips } = useStore.getState()
+    expect(clips[originalId]).toBeUndefined()
+  })
+
+  it('splitClip at edge (splitTime <= startTime) is a no-op', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const originalId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().splitClip(originalId, 0)
+    const { clips, tracks } = useStore.getState()
+    expect(tracks.video.clipIds).toHaveLength(1)
+    expect(clips[originalId]).toBeDefined()
+  })
+
+  it('splitClip at edge (splitTime >= endTime) is a no-op', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const originalId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().splitClip(originalId, 10)
+    const { clips, tracks } = useStore.getState()
+    expect(tracks.video.clipIds).toHaveLength(1)
+    expect(clips[originalId]).toBeDefined()
+  })
+
+  it('deleteClip removes clip from clips record and from track.clipIds', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().deleteClip(clipId)
+    const { clips, tracks } = useStore.getState()
+    expect(clips[clipId]).toBeUndefined()
+    expect(tracks.video.clipIds).not.toContain(clipId)
+  })
+
+  it('selectClip sets ui.selectedClipId to id', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().selectClip(clipId)
+    expect(useStore.getState().ui.selectedClipId).toBe(clipId)
+  })
+
+  it('selectClip(null) clears ui.selectedClipId', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().selectClip(clipId)
+    useStore.getState().selectClip(null)
+    expect(useStore.getState().ui.selectedClipId).toBeNull()
+  })
+
+  it('setActiveTool sets ui.activeTool to "blade"', () => {
+    useStore.getState().setActiveTool('blade')
+    expect(useStore.getState().ui.activeTool).toBe('blade')
+  })
+
+  it('undo after addClip removes the clip and its track reference', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.temporal.getState().undo()
+    const { clips, tracks } = useStore.getState()
+    expect(clips[clipId]).toBeUndefined()
+    expect(tracks.video.clipIds).not.toContain(clipId)
+  })
+
+  it('redo after undo restores the clip', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.temporal.getState().undo()
+    useStore.temporal.getState().redo()
+    const { clips, tracks } = useStore.getState()
+    expect(clips[clipId]).toBeDefined()
+    expect(tracks.video.clipIds).toContain(clipId)
+  })
+
+  it('undo after splitClip restores the original single clip', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const originalId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().splitClip(originalId, 4)
+    useStore.temporal.getState().undo()
+    const { clips, tracks } = useStore.getState()
+    expect(tracks.video.clipIds).toHaveLength(1)
+    expect(clips[originalId]).toBeDefined()
+  })
+
+  it('selectClip is NOT reverted by undo (ui slice excluded)', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().selectClip(clipId)
+    useStore.temporal.getState().undo()
+    expect(useStore.getState().ui.selectedClipId).toBe(clipId)
+  })
+
+  it('setActiveTool is NOT reverted by undo (ui slice excluded)', () => {
+    useStore.getState().setActiveTool('blade')
+    useStore.temporal.getState().undo()
+    expect(useStore.getState().ui.activeTool).toBe('blade')
   })
 })

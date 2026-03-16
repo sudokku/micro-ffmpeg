@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 01-foundation-04-PLAN.md
-last_updated: "2026-03-16T17:44:33.165Z"
+stopped_at: Completed 02-timeline-core-03-PLAN.md
+last_updated: "2026-03-16T22:21:42.425Z"
 last_activity: 2026-03-16 — Phase 1 foundation complete (all 4 plans executed)
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 9
+  completed_plans: 7
   percent: 25
 ---
 
@@ -54,6 +54,9 @@ Progress: [██░░░░░░░░] 25%
 | Phase 01-foundation P03 | 3 | 1 tasks | 3 files |
 | Phase 01-foundation P02 | 2 | 2 tasks | 7 files |
 | Phase 01-foundation P04 | 5 | 2 tasks | 5 files |
+| Phase 02-timeline-core P01 | 3 | 2 tasks | 4 files |
+| Phase 02-timeline-core P02 | 2 | 2 tasks | 5 files |
+| Phase 02-timeline-core P03 | 1 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -74,6 +77,14 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: Zundo partialize uses destructuring pattern — const { ui, export: _export, ...tracked } = state; return tracked
 - [Phase 01-foundation P04]: Phase 1 uses static editorData in TimelinePanel; Phase 2 will wire useStore(state => state.tracks) — controlled display contract established
 - [Phase 01-foundation P04]: TimelinePanel test uses vi.mock for @xzdarcy/react-timeline-editor — canvas/ResizeObserver not available in happy-dom
+- [Phase 02-timeline-core]: Module-level colorIndex counter outside store persists across undo/redo; resetColorIndex() exported for test isolation
+- [Phase 02-timeline-core]: TrackedState omits keyof StoreActions to avoid function references in Zundo partialize snapshot
+- [Phase 02-timeline-core]: splitClip edge guard uses 0.01s threshold to prevent degenerate zero-duration clips
+- [Phase 02-timeline-core]: useKeyboardShortcuts reads selectedClipId via useStore.getState() inside handler to avoid stale closure bug
+- [Phase 02-timeline-core]: Cmd+Shift+Z guard placed before Cmd+Z to prevent redo from triggering undo
+- [Phase 02-timeline-core]: DragLeave hides overlay only when relatedTarget is null (leaving window) to prevent flicker on internal element transitions
+- [Phase 02-timeline-core]: fileInputRef kept in hook and passed as prop to TopBar to keep file input lifecycle ownership centralized
+- [Phase 02-timeline-core]: TopBar Import button is optional (prop-guarded) to preserve backward-compatible rendering if props omitted
 
 ### Pending Todos
 
@@ -85,6 +96,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T17:39:00Z
-Stopped at: Completed 01-foundation-04-PLAN.md
+Last session: 2026-03-16T22:21:42.423Z
+Stopped at: Completed 02-timeline-core-03-PLAN.md
 Resume file: None

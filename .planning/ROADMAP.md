@@ -31,10 +31,10 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 4/4 plans complete
 
 Plans:
-- [ ] 01-01-PLAN.md — Project scaffold: Vite + React 19 + TypeScript + TailwindCSS v4, all dependencies, Vitest, COOP/COEP headers
-- [ ] 01-02-PLAN.md — Zustand store + Zundo: store types, five slices, temporal middleware with partialize, unit tests
-- [ ] 01-03-PLAN.md — Comlink ffmpeg worker: worker file, proxy factory, ping smoke test
-- [ ] 01-04-PLAN.md — Timeline shell: AppShell layout, TopBar, TimelinePanel with two empty rows, render test
+- [x] 01-01-PLAN.md — Project scaffold: Vite + React 19 + TypeScript + TailwindCSS v4, all dependencies, Vitest, COOP/COEP headers
+- [x] 01-02-PLAN.md — Zustand store + Zundo: store types, five slices, temporal middleware with partialize, unit tests
+- [x] 01-03-PLAN.md — Comlink ffmpeg worker: worker file, proxy factory, ping smoke test
+- [x] 01-04-PLAN.md — Timeline shell: AppShell layout, TopBar, TimelinePanel with two empty rows, render test
 
 ### Phase 2: Timeline Core
 **Goal**: Users can import video and audio files, see them on the timeline, edit clips (trim, split, delete, reorder), undo/redo every operation, and see thumbnail previews
@@ -47,14 +47,14 @@ Plans:
   4. User can delete a clip and reorder clips within a track by dragging
   5. User can press Cmd+Z to undo any clip operation and Cmd+Shift+Z to redo it; UI state is never affected by undo
   6. Video clips display a static frame thumbnail extracted from the source file via ffmpeg.wasm
-**Plans**: TBD
+**Plans:** 3/5 plans executed
 
 Plans:
-- [ ] 02-01: Import — drag-and-drop + file-picker, read file into store, assign to video or audio track
-- [ ] 02-02: Timeline display — map store clips to timeline-editor row/action model, controlled display contract
-- [ ] 02-03: Clip editing — trim (drag edges), split (blade), delete, reorder; all dispatched through store actions
-- [ ] 02-04: Undo/redo — keyboard handlers for Cmd+Z / Cmd+Shift+Z, verify Zundo partialize excludes ui/export
-- [ ] 02-05: Thumbnails — extract single representative frame per video clip via ffmpeg worker, store URL, render in timeline
+- [ ] 02-01-PLAN.md — Store actions (TDD): extend Clip type with color/thumbnailUrls, implement addClip/moveClip/trimClip/splitClip/deleteClip/selectClip/setActiveTool with tests
+- [ ] 02-02-PLAN.md — UI shell: ToolSidebar with Select/Blade tools, AppShell layout update, keyboard shortcuts (V/B/Cmd+Z/Cmd+Shift+Z/Delete)
+- [ ] 02-03-PLAN.md — File import: drag-and-drop + file picker, DropOverlay, EmptyState, MIME routing, duration detection
+- [ ] 02-04-PLAN.md — Timeline wiring: deriveEditorData, ClipAction renderer, all timeline callbacks (move/resize/click), store-driven display
+- [ ] 02-05-PLAN.md — Thumbnails: ffmpeg worker extractFrames, computeTimestamps, useThumbnailExtractor hook, manual smoke test
 
 ### Phase 3: Clip Settings
 **Goal**: Users can select any clip and apply per-clip visual filters, a crop rectangle, and output resize dimensions; all settings persist in the store and are undo-able
@@ -64,7 +64,7 @@ Plans:
   1. Selecting a clip opens a settings panel showing its current filter values (blur, brightness, contrast, saturation)
   2. Adjusting any filter slider immediately updates the store value for that clip
   3. User can draw or enter a crop rectangle for the selected clip and the value is stored per-clip
-  4. User can enter output resize dimensions (width × height) for the selected clip and the value is stored per-clip
+  4. User can enter output resize dimensions (width x height) for the selected clip and the value is stored per-clip
   5. Clip settings changes are included in undo/redo history via Zundo
 **Plans**: TBD
 
@@ -89,11 +89,11 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 4/4 | Complete   | 2026-03-16 |
-| 2. Timeline Core | 0/5 | Not started | - |
+| 2. Timeline Core | 3/5 | In Progress|  |
 | 3. Clip Settings | 0/2 | Not started | - |
 | 4. Export | 0/2 | Not started | - |

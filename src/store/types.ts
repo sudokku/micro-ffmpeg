@@ -7,7 +7,8 @@ export interface Clip {
   endTime: number
   trimStart: number
   trimEnd: number
-  thumbnailUrl: string | null
+  color: string
+  thumbnailUrls: string[]
 }
 
 export interface Track {
@@ -30,7 +31,17 @@ export interface ExportState {
   progress: number
 }
 
-export interface StoreState {
+export interface StoreActions {
+  addClip: (file: File, trackId: 'video' | 'audio', duration: number) => void
+  moveClip: (clipId: string, newStart: number, newEnd: number) => void
+  trimClip: (clipId: string, newStart: number, newEnd: number) => void
+  splitClip: (clipId: string, splitTime: number) => void
+  deleteClip: (clipId: string) => void
+  selectClip: (clipId: string | null) => void
+  setActiveTool: (tool: 'select' | 'blade') => void
+}
+
+export interface StoreState extends StoreActions {
   tracks: { video: Track; audio: Track }
   clips: Record<string, Clip>
   clipSettings: Record<string, ClipSettings>
@@ -38,4 +49,4 @@ export interface StoreState {
   export: ExportState
 }
 
-export type TrackedState = Omit<StoreState, 'ui' | 'export'>
+export type TrackedState = Omit<StoreState, 'ui' | 'export' | keyof StoreActions>
