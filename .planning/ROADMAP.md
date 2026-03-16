@@ -12,7 +12,7 @@ Four phases from zero to a fully working client-side video editor. Phase 1 lays 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Project scaffold with Zustand store, Comlink/ffmpeg worker, and @xzdarcy/react-timeline-editor wired up but empty
+- [x] **Phase 1: Foundation** - Project scaffold with Zustand store, Comlink/ffmpeg worker, and @xzdarcy/react-timeline-editor wired up but empty (completed 2026-03-16)
 - [ ] **Phase 2: Timeline Core** - Import clips, display on two-track timeline, trim/split/delete/reorder, undo/redo, static thumbnails
 - [ ] **Phase 3: Clip Settings** - Per-clip filter panel (blur/brightness/contrast/saturation), crop rectangle, and output resize
 - [ ] **Phase 4: Export** - ffmpeg.wasm render of timeline to video file with progress display and download
@@ -28,7 +28,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Zustand store is initialised with `tracks`, `clips`, and `clipSettings` slices; Zundo temporal middleware is wired and excludes `ui` and `export` slices
   3. Comlink-wrapped ffmpeg.wasm Web Worker loads and responds to a `ping` call from the main thread without blocking the UI
   4. @xzdarcy/react-timeline-editor renders an empty two-row (video + audio) timeline component on screen
-**Plans:** 4 plans
+**Plans:** 4/4 plans complete
 
 Plans:
 - [ ] 01-01-PLAN.md — Project scaffold: Vite + React 19 + TypeScript + TailwindCSS v4, all dependencies, Vitest, COOP/COEP headers
@@ -93,7 +93,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/4 | Planning complete | - |
+| 1. Foundation | 4/4 | Complete   | 2026-03-16 |
 | 2. Timeline Core | 0/5 | Not started | - |
 | 3. Clip Settings | 0/2 | Not started | - |
 | 4. Export | 0/2 | Not started | - |
