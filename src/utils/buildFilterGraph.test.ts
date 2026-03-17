@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildVfFilter, FORMAT_MAP } from './buildFilterGraph'
+import { buildVfFilter, buildAfFilter, FORMAT_MAP } from './buildFilterGraph'
 import type { ClipSettings, Clip } from '../store/types'
 
 const baseClip: Clip = {
@@ -137,6 +137,200 @@ describe('buildVfFilter', () => {
     const blurIdx = result.indexOf('boxblur=')
     expect(scaleIdx).toBeLessThan(cropIdx)
     expect(cropIdx).toBeLessThan(blurIdx)
+  })
+})
+
+describe('buildVfFilter — setpts (speed)', () => {
+  it('speed=0.25 produces setpts=4*PTS as first filter', () => {
+    const settings: ClipSettings = { ...defaultSettings, speed: 0.25 as const }
+    const result = buildVfFilter(settings, baseClip)
+    expect(result.startsWith('setpts=4*PTS')).toBe(true)
+  })
+
+  it('speed=0.5 produces setpts=2*PTS as first filter', () => {
+    const settings: ClipSettings = { ...defaultSettings, speed: 0.5 as const }
+    const result = buildVfFilter(settings, baseClip)
+    expect(result.startsWith('setpts=2*PTS')).toBe(true)
+  })
+
+  it('speed=1 omits setpts', () => {
+    const result = buildVfFilter(defaultSettings, baseClip)
+    expect(result).toBe('')
+    expect(result).not.toContain('setpts')
+  })
+
+  it('speed=2 produces setpts=0.5*PTS', () => {
+    const settings: ClipSettings = { ...defaultSettings, speed: 2 as const }
+    const result = buildVfFilter(settings, baseClip)
+    expect(result).toContain('setpts=0.5*PTS')
+  })
+
+  it('speed=4 produces setpts=0.25*PTS', () => {
+    const settings: ClipSettings = { ...defaultSettings, speed: 4 as const }
+    const result = buildVfFilter(settings, baseClip)
+    expect(result).toContain('setpts=0.25*PTS')
+  })
+})
+
+describe('buildVfFilter — rotation', () => {
+  it('rotation=0 does not contain transpose', () => {
+    const result = buildVfFilter(defaultSettings, baseClip)
+    expect(result).not.toContain('transpose')
+  })
+
+  it('rotation=90 contains transpose=1', () => {
+    const settings: ClipSettings = { ...defaultSettings, rotation: 90 as const }
+    const result = buildVfFilter(settings, baseClip)
+    expect(result).toContain('transpose=1')
+  })
+
+  it('rotation=180 contains vflip and hflip adjacent (vflip then hflip)', () => {
+    const settings: ClipSettings = { ...defaultSettings, rotation: 180 as const }
+    const result = buildVfFilter(settings, baseClip)
+    expect(result).toContain('vflip')
+    expect(result).toContain('hflip')
+    const vflipIdx = result.indexOf('vflip')
+    const hflipIdx = result.indexOf('hflip')
+    expect(vflipIdx).toBeLessThan(hflipIdx)
+  })
+
+  it('rotation=270 contains transpose=2', () => {
+    const settings: ClipSettings = { ...defaultSettings, rotation: 270 as const }
+    const result = buildVfFilter(settings, baseClip)
+    expect(result).toContain('transpose=2')
+  })
+})
+
+describe('buildVfFilter — flip', () => {
+  it('flipH=true contains hflip', () => {
+    const settings: ClipSettings = { ...defaultSettings, flipH: true }
+    const result = buildVfFilter(settings, baseClip)
+    expect(result).toContain('hflip')
+  })
+
+  it('flipV=true contains vflip', () => {
+    const settings: ClipSettings = { ...defaultSettings, flipV: true }
+    const result = buildVfFilter(settings, baseClip)
+    expect(result).toContain('vflip')
+  })
+
+  it('flipH=true and flipV=true contains both hflip and vflip', () => {
+    const settings: ClipSettings = { ...defaultSettings, flipH: true, flipV: true }
+    const result = buildVfFilter(settings, baseClip)
+    expect(result).toContain('hflip')
+    expect(result).toContain('vflip')
+  })
+
+  it('rotation=90 + flipH=true — transpose=1 appears before hflip', () => {
+    const settings: ClipSettings = { ...defaultSettings, rotation: 90 as const, flipH: true }
+    const result = buildVfFilter(settings, baseClip)
+    const transposeIdx = result.indexOf('transpose=1')
+    const hflipIdx = result.lastIndexOf('hflip')
+    expect(transposeIdx).toBeGreaterThanOrEqual(0)
+    expect(hflipIdx).toBeGreaterThanOrEqual(0)
+    expect(transposeIdx).toBeLessThan(hflipIdx)
+  })
+})
+
+describe('buildVfFilter — hue', () => {
+  it('hue=0 does not contain hue filter', () => {
+    const result = buildVfFilter(defaultSettings, baseClip)
+    expect(result).not.toContain('hue')
+  })
+
+  it('hue=45 contains hue=h=45 (named-param syntax)', () => {
+    const settings: ClipSettings = { ...defaultSettings, hue: 45 }
+    const result = buildVfFilter(settings, baseClip)
+    expect(result).toContain('hue=h=45')
+    expect(result).not.toContain('hue=45')
+  })
+
+  it('hue=-30 contains hue=h=-30', () => {
+    const settings: ClipSettings = { ...defaultSettings, hue: -30 }
+    const result = buildVfFilter(settings, baseClip)
+    expect(result).toContain('hue=h=-30')
+  })
+})
+
+describe('buildVfFilter — full chain order', () => {
+  it('setpts < transpose < hflip < scale < crop < boxblur < hue=h < eq=brightness', () => {
+    const settings: ClipSettings = {
+      ...defaultSettings,
+      speed: 2 as const,
+      rotation: 90 as const,
+      flipH: true,
+      resize: { width: 1280, height: 720 },
+      crop: { x: 0, y: 0, width: 100, height: 100 },
+      blur: 3,
+      hue: 45,
+      brightness: 0.1,
+    }
+    const result = buildVfFilter(settings, baseClip)
+    const setptsIdx = result.indexOf('setpts=')
+    const transposeIdx = result.indexOf('transpose=1')
+    const hflipIdx = result.lastIndexOf('hflip')
+    const scaleIdx = result.indexOf('scale=')
+    const cropIdx = result.indexOf('crop=')
+    const boxblurIdx = result.indexOf('boxblur=')
+    const hueIdx = result.indexOf('hue=h=')
+    const eqIdx = result.indexOf('eq=brightness=')
+    expect(setptsIdx).toBeGreaterThanOrEqual(0)
+    expect(transposeIdx).toBeGreaterThanOrEqual(0)
+    expect(hflipIdx).toBeGreaterThanOrEqual(0)
+    expect(scaleIdx).toBeGreaterThanOrEqual(0)
+    expect(cropIdx).toBeGreaterThanOrEqual(0)
+    expect(boxblurIdx).toBeGreaterThanOrEqual(0)
+    expect(hueIdx).toBeGreaterThanOrEqual(0)
+    expect(eqIdx).toBeGreaterThanOrEqual(0)
+    expect(setptsIdx).toBeLessThan(transposeIdx)
+    expect(transposeIdx).toBeLessThan(hflipIdx)
+    expect(hflipIdx).toBeLessThan(scaleIdx)
+    expect(scaleIdx).toBeLessThan(cropIdx)
+    expect(cropIdx).toBeLessThan(boxblurIdx)
+    expect(boxblurIdx).toBeLessThan(hueIdx)
+    expect(hueIdx).toBeLessThan(eqIdx)
+  })
+})
+
+describe('buildAfFilter', () => {
+  it('speed=1, volume=1.0 returns empty string', () => {
+    expect(buildAfFilter(1, 1.0)).toBe('')
+  })
+
+  it('speed=0.25, volume=1.0 returns "atempo=0.5,atempo=0.5"', () => {
+    expect(buildAfFilter(0.25, 1.0)).toBe('atempo=0.5,atempo=0.5')
+  })
+
+  it('speed=0.5, volume=1.0 returns "atempo=0.5"', () => {
+    expect(buildAfFilter(0.5, 1.0)).toBe('atempo=0.5')
+  })
+
+  it('speed=2, volume=1.0 returns "atempo=2.0"', () => {
+    expect(buildAfFilter(2, 1.0)).toBe('atempo=2.0')
+  })
+
+  it('speed=4, volume=1.0 returns "atempo=2.0,atempo=2.0"', () => {
+    expect(buildAfFilter(4, 1.0)).toBe('atempo=2.0,atempo=2.0')
+  })
+
+  it('speed=1, volume=0.5 returns "volume=0.5"', () => {
+    expect(buildAfFilter(1, 0.5)).toBe('volume=0.5')
+  })
+
+  it('speed=1, volume=2.0 returns "volume=2"', () => {
+    expect(buildAfFilter(1, 2.0)).toBe('volume=2')
+  })
+
+  it('speed=1, volume=0 returns "volume=0"', () => {
+    expect(buildAfFilter(1, 0)).toBe('volume=0')
+  })
+
+  it('speed=2, volume=0.5 returns "atempo=2.0,volume=0.5"', () => {
+    expect(buildAfFilter(2, 0.5)).toBe('atempo=2.0,volume=0.5')
+  })
+
+  it('speed=0.25, volume=1.5 returns "atempo=0.5,atempo=0.5,volume=1.5"', () => {
+    expect(buildAfFilter(0.25, 1.5)).toBe('atempo=0.5,atempo=0.5,volume=1.5')
   })
 })
 

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Preview & Polish
 status: completed
-stopped_at: Phase 6 plans ready — 2 plans, 2 waves
-last_updated: "2026-03-17T23:11:47.734Z"
+stopped_at: Completed 06-filter-graph-02-PLAN.md
+last_updated: "2026-03-17T23:24:18.353Z"
 last_activity: "2026-03-17 — Phase 5 plan 01 complete: extended store schema for v1.1"
 progress:
   total_phases: 7
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 3
-  completed_plans: 1
+  completed_plans: 3
   percent: 14
 ---
 
@@ -50,6 +50,8 @@ Progress: [█░░░░░░░░░] 14% (v1.1)
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 06-filter-graph P01 | 8 | 1 tasks | 2 files |
+| Phase 06-filter-graph P02 | 8 | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -67,6 +69,9 @@ Recent decisions affecting current work:
 - [v1.1 Filter Graph]: hue filter syntax is `hue=h=N` (named param), not `hue=N` (positional — deprecated)
 - [v1.1 Waveform]: `decodeAudioData` detaches the `ArrayBuffer` — always call `file.arrayBuffer()` twice independently for waveform vs ffmpeg
 - [v1.1 Preview]: rAF loop must be cancelled on unmount and pause — store handle in `useRef<number>`; React 19 Strict Mode double-mounts in dev
+- [Phase 06-filter-graph]: buildAfFilter takes (speed, volume) primitives not full ClipSettings — cleaner API, easier to test
+- [Phase 06-filter-graph]: sourceDuration = duration * speed is correct -t value for speed-altered clips: at 2x speed FFmpeg reads 2x more source frames
+- [Phase 06-filter-graph]: -af omitted entirely when buildAfFilter returns empty string (speed=1, volume=1.0) to avoid passthrough filter overhead
 
 ### Pending Todos
 
@@ -78,6 +83,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-17T23:11:47.728Z
-Stopped at: Phase 6 plans ready — 2 plans, 2 waves
-Resume file: .planning/phases/06-filter-graph/06-01-PLAN.md
+Last session: 2026-03-17T23:24:18.351Z
+Stopped at: Completed 06-filter-graph-02-PLAN.md
+Resume file: None

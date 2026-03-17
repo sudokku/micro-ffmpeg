@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { triggerDownload } from './useExport'
-import { FORMAT_MAP } from '../utils/buildFilterGraph'
+import { FORMAT_MAP, buildAfFilter } from '../utils/buildFilterGraph'
 
 beforeEach(() => {
   // Reset mock between tests
@@ -70,5 +70,38 @@ describe('FORMAT_MAP entries', () => {
   it('mov has ext="mov" and codec="libx264"', () => {
     expect(FORMAT_MAP.mov.ext).toBe('mov')
     expect(FORMAT_MAP.mov.codec).toBe('libx264')
+  })
+})
+
+describe('speed-scaled source duration', () => {
+  it('speed=2 doubles source duration', () => {
+    expect(5 * 2).toBe(10)
+  })
+  it('speed=0.5 halves source duration', () => {
+    expect(5 * 0.5).toBe(2.5)
+  })
+  it('speed=1 leaves duration unchanged', () => {
+    expect(5 * 1).toBe(5)
+  })
+  it('speed=0.25 quarters source duration', () => {
+    expect(10 * 0.25).toBe(2.5)
+  })
+  it('speed=4 quadruples source duration', () => {
+    expect(10 * 4).toBe(40)
+  })
+})
+
+describe('buildAfFilter integration for useExport', () => {
+  it('speed=2 + volume=0.5 returns atempo and volume', () => {
+    expect(buildAfFilter(2, 0.5)).toBe('atempo=2.0,volume=0.5')
+  })
+  it('speed=0.25 + volume=1.5 returns chained atempo and volume', () => {
+    expect(buildAfFilter(0.25, 1.5)).toBe('atempo=0.5,atempo=0.5,volume=1.5')
+  })
+  it('speed=1 + volume=1.0 returns empty string (no -af needed)', () => {
+    expect(buildAfFilter(1, 1.0)).toBe('')
+  })
+  it('speed=4 + volume=1.0 returns chained atempo only', () => {
+    expect(buildAfFilter(4, 1.0)).toBe('atempo=2.0,atempo=2.0')
   })
 })

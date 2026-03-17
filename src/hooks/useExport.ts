@@ -3,7 +3,7 @@ import type { FFmpeg } from '@ffmpeg/ffmpeg'
 import { fetchFile } from '@ffmpeg/util'
 import { useStore } from '../store'
 import { getFFmpeg, enqueueFFmpegJob, resetFFmpegInstance } from '../utils/ffmpegSingleton'
-import { buildVfFilter, FORMAT_MAP, buildOutputFilename } from '../utils/buildFilterGraph'
+import { buildVfFilter, buildAfFilter, FORMAT_MAP, buildOutputFilename } from '../utils/buildFilterGraph'
 import type { ExportFormat } from '../utils/buildFilterGraph'
 
 // Module-level state for the last successful export's download URL and filename
@@ -108,6 +108,8 @@ export function useExport() {
           // trimClip() only updates startTime/endTime (timeline positions); trimStart/trimEnd are not
           // kept in sync yet. Use endTime-startTime (the displayed timeline duration) for -t.
           const duration = clip.endTime - clip.startTime
+          const speed = settings?.speed ?? 1
+          const sourceDuration = duration * speed
 
           // Register per-clip progress handler
           const handler = ({ progress: p }: { progress: number }) => {
@@ -121,7 +123,7 @@ export function useExport() {
           console.log(`[export] clip ${i + 1}/${totalClips}: "${clip.sourceFile.name}" ${clip.sourceWidth}×${clip.sourceHeight} trim=${trimStart.toFixed(3)}s dur=${duration.toFixed(3)}s`)
 
           try {
-            const execArgs: string[] = ['-ss', String(trimStart), '-i', inputName, '-t', String(duration)]
+            const execArgs: string[] = ['-ss', String(trimStart), '-i', inputName, '-t', String(sourceDuration)]
 
             if (format === 'gif') {
               // GIF: single-pass, no normalize scale, fps=15, scale=480:-2, lanczos
@@ -174,13 +176,22 @@ export function useExport() {
             await ff.writeFile(inputName, fileData)
             const trimStart = clip.trimStart
             const duration = clip.endTime - clip.startTime
-            console.log(`[export] audio ${i + 1}: "${clip.sourceFile.name}" trim=${trimStart.toFixed(3)}s dur=${duration.toFixed(3)}s`)
-            await execAndCheck(
-              ff,
-              // -ar 48000: normalize sample rate so multi-clip audio concat -c copy never sees mismatched rates
-              ['-ss', String(trimStart), '-i', inputName, '-t', String(duration), '-c:a', 'aac', '-b:a', '128k', '-ar', '48000', outputName],
-              `audio ${i + 1} encode`,
-            )
+            const audioClipSettings = clipSettings[audioClipIds[i]]
+            const audioSpeed = audioClipSettings?.speed ?? 1
+            const audioVolume = audioClipSettings?.volume ?? 1.0
+            const audioSourceDuration = duration * audioSpeed
+            const afFilter = buildAfFilter(audioSpeed, audioVolume)
+            const audioArgs: string[] = [
+              '-ss', String(trimStart), '-i', inputName,
+              '-t', String(audioSourceDuration),
+              '-c:a', 'aac', '-b:a', '128k', '-ar', '48000',
+            ]
+            if (afFilter) {
+              audioArgs.push('-af', afFilter)
+            }
+            audioArgs.push(outputName)
+            // -ar 48000: normalize sample rate so multi-clip audio concat -c copy never sees mismatched rates
+            await execAndCheck(ff, audioArgs, `audio ${i + 1} encode`)
             try { await ff.deleteFile(inputName) } catch { /* ignore */ }
           }
           if (audioClipIds.length === 1) {

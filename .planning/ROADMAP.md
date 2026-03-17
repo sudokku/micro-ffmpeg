@@ -22,7 +22,7 @@
 **Milestone Goal:** Transform the functional v1.0 editor into a real NLE feel — live preview with playback, timeline zoom, audio waveforms, multi-clip selection, enhanced per-clip settings, and iMovie-style UI polish.
 
 - [x] **Phase 5: Store Foundation** — Extend store schema for all v1.1 features; zero UI changes
-- [ ] **Phase 6: Filter Graph** — Add speed/rotation/volume/hue/flip to the ffmpeg filter pipeline
+- [x] **Phase 6: Filter Graph** — Add speed/rotation/volume/hue/flip to the ffmpeg filter pipeline (completed 2026-03-17)
 - [ ] **Phase 7: Waveform Infrastructure** — Extract and render audio waveforms on timeline clips
 - [ ] **Phase 8: Timeline Zoom** — Wire +/- buttons and modifier+scroll zoom to the timeline
 - [ ] **Phase 9: Multi-Clip Selection** — Cmd/Ctrl+click multi-select with bulk delete, settings, and drag
@@ -124,7 +124,7 @@ Plans:
 | 3. Clip Settings | v1.0 | 2/2 | Complete | 2026-03-17 |
 | 4. Export | v1.0 | 2/2 | Complete | 2026-03-17 |
 | 5. Store Foundation | v1.1 | Complete    | 2026-03-17 | 2026-03-17 |
-| 6. Filter Graph | v1.1 | 0/2 | Not started | - |
+| 6. Filter Graph | 2/2 | Complete   | 2026-03-17 | - |
 | 7. Waveform Infrastructure | v1.1 | 0/TBD | Not started | - |
 | 8. Timeline Zoom | v1.1 | 0/TBD | Not started | - |
 | 9. Multi-Clip Selection | v1.1 | 0/TBD | Not started | - |

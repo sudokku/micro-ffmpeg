@@ -47,11 +47,11 @@
 
 ### Clip Settings (CLIP)
 
-- [ ] **CLIP-01**: User can set per-clip playback speed (0.25×/0.5×/1×/2×/4× presets)
-- [ ] **CLIP-02**: User can set per-clip rotation (0°/90°/180°/270° presets)
-- [ ] **CLIP-03**: User can set per-clip volume (0–200%)
-- [ ] **CLIP-04**: User can set per-clip hue shift
-- [ ] **CLIP-05**: User can flip a clip horizontally or vertically
+- [x] **CLIP-01**: User can set per-clip playback speed (0.25×/0.5×/1×/2×/4× presets)
+- [x] **CLIP-02**: User can set per-clip rotation (0°/90°/180°/270° presets)
+- [x] **CLIP-03**: User can set per-clip volume (0–200%)
+- [x] **CLIP-04**: User can set per-clip hue shift
+- [x] **CLIP-05**: User can flip a clip horizontally or vertically
 
 ### UI Polish (UI)
 
@@ -108,11 +108,11 @@
 | SEL-02 | Phase 9 | Pending |
 | SEL-03 | Phase 9 | Pending |
 | SEL-04 | Phase 9 | Pending |
-| CLIP-01 | Phase 6 (filter) / Phase 11 (UI) | Pending |
-| CLIP-02 | Phase 6 (filter) / Phase 11 (UI) | Pending |
-| CLIP-03 | Phase 6 (filter) / Phase 11 (UI) | Pending |
-| CLIP-04 | Phase 6 (filter) / Phase 11 (UI) | Pending |
-| CLIP-05 | Phase 6 (filter) / Phase 11 (UI) | Pending |
+| CLIP-01 | Phase 6 (filter) / Phase 11 (UI) | Complete |
+| CLIP-02 | Phase 6 (filter) / Phase 11 (UI) | Complete |
+| CLIP-03 | Phase 6 (filter) / Phase 11 (UI) | Complete |
+| CLIP-04 | Phase 6 (filter) / Phase 11 (UI) | Complete |
+| CLIP-05 | Phase 6 (filter) / Phase 11 (UI) | Complete |
 | UI-01 | Phase 11 | Pending |
 
 **Coverage:**
