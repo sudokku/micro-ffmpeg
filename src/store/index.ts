@@ -22,7 +22,7 @@ export const useStore = create<StoreState>()(
       ui: { selectedClipId: null, activeTool: 'select' },
       export: { status: 'idle', progress: 0 },
 
-      addClip: (file, trackId, duration) => {
+      addClip: (file, trackId, duration, sourceWidth = 0, sourceHeight = 0) => {
         set((state) => {
           const id = crypto.randomUUID()
           const track = state.tracks[trackId]
@@ -36,6 +36,8 @@ export const useStore = create<StoreState>()(
             trackId,
             sourceFile: file,
             sourceDuration: duration,
+            sourceWidth,
+            sourceHeight,
             startTime,
             endTime,
             trimStart: 0,
@@ -137,11 +139,23 @@ export const useStore = create<StoreState>()(
         const state = get()
         set({ ui: { ...state.ui, activeTool: tool } })
       },
+
+      updateClipSettings: (clipId, patch) => {
+        set((state) => {
+          const existing = state.clipSettings[clipId] ?? { clipId }
+          return {
+            clipSettings: {
+              ...state.clipSettings,
+              [clipId]: { ...existing, ...patch },
+            },
+          }
+        })
+      },
     }),
     {
       partialize: (state): TrackedState => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { ui, export: _export, addClip, moveClip, trimClip, splitClip, deleteClip, selectClip, setActiveTool, ...tracked } = state
+        const { ui, export: _export, addClip, moveClip, trimClip, splitClip, deleteClip, selectClip, setActiveTool, updateClipSettings, ...tracked } = state
         return tracked
       },
     },

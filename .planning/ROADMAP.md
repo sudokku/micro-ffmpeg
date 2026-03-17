@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Project scaffold with Zustand store, Comlink/ffmpeg worker, and @xzdarcy/react-timeline-editor wired up but empty (completed 2026-03-16)
 - [x] **Phase 2: Timeline Core** - Import clips, display on two-track timeline, trim/split/delete/reorder, undo/redo, static thumbnails (completed 2026-03-16)
-- [ ] **Phase 3: Clip Settings** - Per-clip filter panel (blur/brightness/contrast/saturation), crop rectangle, and output resize
+- [x] **Phase 3: Clip Settings** - Per-clip filter panel (blur/brightness/contrast/saturation), crop rectangle, and output resize (completed 2026-03-17)
 - [ ] **Phase 4: Export** - ffmpeg.wasm render of timeline to video file with progress display and download
 
 ## Phase Details
@@ -66,11 +66,11 @@ Plans:
   3. User can draw or enter a crop rectangle for the selected clip and the value is stored per-clip
   4. User can enter output resize dimensions (width x height) for the selected clip and the value is stored per-clip
   5. Clip settings changes are included in undo/redo history via Zundo
-**Plans**: TBD
+**Plans:** 2/2 plans complete
 
 Plans:
-- [ ] 03-01: ClipSettings store slice — add blur, brightness, contrast, saturation, crop, resize fields; include in Zundo tracked state
-- [ ] 03-02: Settings panel UI — selected-clip context, filter sliders, crop input, resize input, wired to store actions
+- [ ] 03-01-PLAN.md — ClipSettings store extension (TDD): extend ClipSettings interface with filter/crop/resize fields, add updateClipSettings action, add sourceWidth/sourceHeight to Clip, extract dimensions during import
+- [ ] 03-02-PLAN.md — Settings panel UI: ClipSettingsPanel component with filter sliders, crop inputs, resize inputs with aspect-ratio lock, wired into AppShell right sidebar
 
 ### Phase 4: Export
 **Goal**: Users can render the full timeline to a video file, watch export progress, and download the result
@@ -95,5 +95,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 |-------|----------------|--------|-----------|
 | 1. Foundation | 4/4 | Complete   | 2026-03-16 |
 | 2. Timeline Core | 5/5 | Complete   | 2026-03-16 |
-| 3. Clip Settings | 0/2 | Not started | - |
+| 3. Clip Settings | 2/2 | Complete    | 2026-03-17 |
 | 4. Export | 0/2 | Not started | - |

@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 02-05-PLAN.md — Phase 2 fully complete
-last_updated: "2026-03-16T23:33:29.629Z"
-last_activity: "2026-03-17 — Phase 2 Plan 04 complete: timeline fully wired to store"
+stopped_at: Completed 03-clip-settings-03-02-PLAN.md
+last_updated: "2026-03-17T09:36:10.357Z"
+last_activity: "2026-03-17 — Phase 3 Plan 02 complete: ClipSettingsPanel UI verified by user"
 progress:
   total_phases: 4
-  completed_phases: 2
-  total_plans: 9
-  completed_plans: 9
-  percent: 88
+  completed_phases: 3
+  total_plans: 11
+  completed_plans: 11
+  percent: 100
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-16)
 
 **Core value:** Timeline + store work perfectly: clip edits reflect instantly, undo/redo is flawless, export faithfully renders what the timeline shows
-**Current focus:** Phase 2 — Timeline Core
+**Current focus:** Phase 3 — Clip Settings
 
 ## Current Position
 
-Phase: 2 of 4 (Timeline Core) — COMPLETE
-Plan: 4 of 4 in current phase
-Status: Phase 2 complete — ready for Phase 3
-Last activity: 2026-03-17 — Phase 2 Plan 04 complete: timeline fully wired to store
+Phase: 3 of 4 (Clip Settings) — COMPLETE
+Plan: 2 of 2 in current phase
+Status: Phase 3 complete — ready for Phase 4 (Export)
+Last activity: 2026-03-17 — Phase 3 Plan 02 complete: ClipSettingsPanel UI verified by user
 
-Progress: [████████░░] 88%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -60,6 +60,9 @@ Progress: [████████░░] 88%
 | Phase 02-timeline-core P04 | 2 | 2 tasks | 4 files |
 | Phase 02-timeline-core P05 | 2 | 2 tasks | 5 files |
 | Phase 02-timeline-core P05 | 35 | 3 tasks | 10 files |
+| Phase 03-clip-settings P01 | 3 | 2 tasks | 4 files |
+| Phase 03-clip-settings P02 | 4 | 2 tasks | 5 files |
+| Phase 03-clip-settings P02 | 5 | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -103,6 +106,12 @@ Recent decisions affecting current work:
 - [Phase 02-timeline-core]: deriveEditorData sets maxEnd = startTime + (sourceDuration - trimStart - trimEnd) on each action to prevent timeline resize beyond source file length.
 - [Phase 02-timeline-core]: ClipAction label uses select-none to prevent text highlight on mouse drag.
 - [Phase 02-timeline-core]: deleteClip clears ui.selectedClipId in same set() call — prevents second Zundo history entry from separate selectClip(null) call
+- [Phase 03-clip-settings]: updateClipSettings uses patch-merge semantics: existing entry seeded with { clipId } if absent, then spread with patch for accumulative partial updates
+- [Phase 03-clip-settings]: getFileMetadata replaces getFileDuration: returns { duration, width, height } — audio returns 0,0 for dimensions; sourceWidth/sourceHeight default to 0 in addClip for backward compatibility
+- [Phase 03-clip-settings]: Slider commit-on-release pattern: store written only on pointer release via onPointerUp/onTouchEnd, local state used for drag display to prevent ghost undo entries
+- [Phase 03-clip-settings]: ClipSettingsPanel: TypeScript closures require capturing narrowed const vars after early-return guard (clipId, sourceWidth, sourceHeight) since TypeScript cannot narrow union types inside closures
+- [Phase 03-clip-settings]: Aspect ratio in resize always computed from clip.sourceWidth/sourceHeight, not current resize values, for stable lock behavior across multiple edits
+- [Phase 03-clip-settings]: @testing-library/jest-dom wired globally via src/test-setup.ts in vitest.config.ts setupFiles — was installed but not activated
 
 ### Pending Todos
 
@@ -114,6 +123,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-17
-Stopped at: Phase 2 post-execution fixes complete — ready to plan Phase 3
+Last session: 2026-03-17T09:32:40.123Z
+Stopped at: Completed 03-clip-settings-03-02-PLAN.md
 Resume file: None

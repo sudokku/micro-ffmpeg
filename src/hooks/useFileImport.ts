@@ -7,18 +7,22 @@ function getTrackId(file: File): 'video' | 'audio' | null {
   return null
 }
 
-function getFileDuration(file: File): Promise<number> {
+function getFileMetadata(file: File): Promise<{ duration: number; width: number; height: number }> {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(file)
-    const el = document.createElement(file.type.startsWith('video/') ? 'video' : 'audio')
+    const isVideo = file.type.startsWith('video/')
+    const el = document.createElement(isVideo ? 'video' : 'audio')
     el.preload = 'metadata'
     el.onloadedmetadata = () => {
-      resolve(el.duration)
+      const duration = el.duration
+      const width = isVideo ? (el as HTMLVideoElement).videoWidth : 0
+      const height = isVideo ? (el as HTMLVideoElement).videoHeight : 0
       URL.revokeObjectURL(url)
+      resolve({ duration, width, height })
     }
     el.onerror = () => {
       URL.revokeObjectURL(url)
-      reject(new Error(`Failed to read duration for ${file.name}`))
+      reject(new Error(`Failed to read metadata for ${file.name}`))
     }
     el.src = url
   })
@@ -31,8 +35,8 @@ export function useFileImport() {
   const importFile = useCallback(async (file: File) => {
     const trackId = getTrackId(file)
     if (!trackId) return // silently ignore unsupported types
-    const duration = await getFileDuration(file)
-    useStore.getState().addClip(file, trackId, duration)
+    const { duration, width, height } = await getFileMetadata(file)
+    useStore.getState().addClip(file, trackId, duration, width, height)
   }, [])
 
   const importFiles = useCallback(

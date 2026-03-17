@@ -3,6 +3,7 @@ import { ToolSidebar } from './ToolSidebar'
 import { TimelinePanel } from './TimelinePanel'
 import { DropOverlay } from './DropOverlay'
 import { EmptyState } from './EmptyState'
+import { ClipSettingsPanel } from './ClipSettingsPanel'
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts'
 import { useFileImport } from '../hooks/useFileImport'
 import { useThumbnailExtractor } from '../hooks/useThumbnailExtractor'
@@ -30,6 +31,7 @@ export function AppShell() {
             <EmptyState />
           )}
         </main>
+        <ClipSettingsPanel />
       </div>
       <div className="flex-none border-t border-zinc-800" style={{ height: '37vh' }}>
         <TimelinePanel />

@@ -30,12 +30,12 @@
 
 ### Clip Settings
 
-- [ ] **CLIP-01**: User can apply a blur filter to a selected clip
-- [ ] **CLIP-02**: User can adjust brightness of a selected clip
-- [ ] **CLIP-03**: User can adjust contrast of a selected clip
-- [ ] **CLIP-04**: User can adjust saturation of a selected clip
-- [ ] **CLIP-05**: User can set a crop rectangle for a selected clip
-- [ ] **CLIP-06**: User can set output resize dimensions for a selected clip
+- [x] **CLIP-01**: User can apply a blur filter to a selected clip
+- [x] **CLIP-02**: User can adjust brightness of a selected clip
+- [x] **CLIP-03**: User can adjust contrast of a selected clip
+- [x] **CLIP-04**: User can adjust saturation of a selected clip
+- [x] **CLIP-05**: User can set a crop rectangle for a selected clip
+- [x] **CLIP-06**: User can set output resize dimensions for a selected clip
 
 ### Export
 
@@ -95,12 +95,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UNDO-01 | Phase 2 | Complete |
 | UNDO-02 | Phase 2 | Complete |
 | PREV-01 | Phase 2 | Complete |
-| CLIP-01 | Phase 3 | Pending |
-| CLIP-02 | Phase 3 | Pending |
-| CLIP-03 | Phase 3 | Pending |
-| CLIP-04 | Phase 3 | Pending |
-| CLIP-05 | Phase 3 | Pending |
-| CLIP-06 | Phase 3 | Pending |
+| CLIP-01 | Phase 3 | Complete |
+| CLIP-02 | Phase 3 | Complete |
+| CLIP-03 | Phase 3 | Complete |
+| CLIP-04 | Phase 3 | Complete |
+| CLIP-05 | Phase 3 | Complete |
+| CLIP-06 | Phase 3 | Complete |
 | EXPO-01 | Phase 4 | Pending |
 | EXPO-02 | Phase 4 | Pending |
 | EXPO-03 | Phase 4 | Pending |

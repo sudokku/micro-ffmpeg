@@ -7,6 +7,8 @@ const mockClip: Clip = {
   trackId: 'video',
   sourceFile: new File([], 'test.mp4'),
   sourceDuration: 10,
+  sourceWidth: 1920,
+  sourceHeight: 1080,
   startTime: 0,
   endTime: 10,
   trimStart: 0,
@@ -275,5 +277,100 @@ describe('Store actions', () => {
     useStore.temporal.getState().undo()
     expect(useStore.getState().clips[clipId]).toBeDefined()
     expect(useStore.getState().tracks.video.clipIds).toContain(clipId)
+  })
+})
+
+describe('ClipSettings actions', () => {
+  const mockFile = new File([], 'test.mp4')
+
+  it('updateClipSettings stores blur in clipSettings[clipId]', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().updateClipSettings(clipId, { blur: 5 })
+    const settings = useStore.getState().clipSettings[clipId]
+    expect(settings).toBeDefined()
+    expect(settings.clipId).toBe(clipId)
+    expect(settings.blur).toBe(5)
+  })
+
+  it('updateClipSettings stores brightness in clipSettings[clipId]', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().updateClipSettings(clipId, { brightness: 0.5 })
+    expect(useStore.getState().clipSettings[clipId].brightness).toBe(0.5)
+  })
+
+  it('updateClipSettings stores contrast in clipSettings[clipId]', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().updateClipSettings(clipId, { contrast: 1.5 })
+    expect(useStore.getState().clipSettings[clipId].contrast).toBe(1.5)
+  })
+
+  it('updateClipSettings stores saturation in clipSettings[clipId]', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().updateClipSettings(clipId, { saturation: 2.0 })
+    expect(useStore.getState().clipSettings[clipId].saturation).toBe(2.0)
+  })
+
+  it('updateClipSettings stores crop object in clipSettings[clipId]', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    const crop = { x: 10, y: 20, width: 640, height: 480 }
+    useStore.getState().updateClipSettings(clipId, { crop })
+    expect(useStore.getState().clipSettings[clipId].crop).toEqual(crop)
+  })
+
+  it('updateClipSettings stores resize object in clipSettings[clipId]', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    const resize = { width: 1280, height: 720 }
+    useStore.getState().updateClipSettings(clipId, { resize })
+    expect(useStore.getState().clipSettings[clipId].resize).toEqual(resize)
+  })
+
+  it('updateClipSettings merges partial updates — both fields present after two calls', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().updateClipSettings(clipId, { blur: 5 })
+    useStore.getState().updateClipSettings(clipId, { contrast: 1.5 })
+    const settings = useStore.getState().clipSettings[clipId]
+    expect(settings.blur).toBe(5)
+    expect(settings.contrast).toBe(1.5)
+  })
+
+  it('undo after updateClipSettings reverts clipSettings to empty {}', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    // Clear history created by addClip so we have a clean undo baseline
+    useStore.temporal.getState().clear()
+    useStore.getState().updateClipSettings(clipId, { blur: 5 })
+    expect(useStore.getState().clipSettings[clipId].blur).toBe(5)
+    useStore.temporal.getState().undo()
+    expect(useStore.getState().clipSettings[clipId]).toBeUndefined()
+  })
+
+  it('redo after undo restores the clipSettings change', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.temporal.getState().clear()
+    useStore.getState().updateClipSettings(clipId, { blur: 5 })
+    useStore.temporal.getState().undo()
+    useStore.temporal.getState().redo()
+    expect(useStore.getState().clipSettings[clipId].blur).toBe(5)
+  })
+
+  it('updateClipSettings for non-existent clipId creates a new entry', () => {
+    useStore.getState().updateClipSettings('ghost-id', { blur: 3 })
+    const settings = useStore.getState().clipSettings['ghost-id']
+    expect(settings).toBeDefined()
+    expect(settings.clipId).toBe('ghost-id')
+    expect(settings.blur).toBe(3)
+  })
+
+  it('Clip type includes sourceWidth and sourceHeight (mockClip shape)', () => {
+    expect(mockClip.sourceWidth).toBe(1920)
+    expect(mockClip.sourceHeight).toBe(1080)
   })
 })
