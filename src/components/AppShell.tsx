@@ -5,11 +5,13 @@ import { DropOverlay } from './DropOverlay'
 import { EmptyState } from './EmptyState'
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts'
 import { useFileImport } from '../hooks/useFileImport'
+import { useThumbnailExtractor } from '../hooks/useThumbnailExtractor'
 import { useStore } from '../store'
 
 export function AppShell() {
   useKeyboardShortcuts()
   const { showOverlay, fileInputRef, openFilePicker, handleFileInputChange } = useFileImport()
+  useThumbnailExtractor()
   const hasClips = useStore((s) => Object.keys(s.clips).length > 0)
 
   return (

@@ -38,12 +38,12 @@ export function useKeyboardShortcuts() {
       }
 
       // Clip deletion — Delete or Backspace
+      // deleteClip also clears selectedClipId in one set() call to avoid a double undo step
       if ((e.key === 'Delete' || e.key === 'Backspace') && useStore.getState().ui.selectedClipId) {
         e.preventDefault()
         const clipId = useStore.getState().ui.selectedClipId
         if (clipId) {
           useStore.getState().deleteClip(clipId)
-          useStore.getState().selectClip(null)
         }
       }
     }

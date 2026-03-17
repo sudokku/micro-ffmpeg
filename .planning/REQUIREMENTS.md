@@ -12,8 +12,8 @@
 
 ### Timeline
 
-- [ ] **TIME-01**: User can see imported video clips on a single video track in the timeline
-- [ ] **TIME-02**: User can see imported audio clips on a single audio track in the timeline
+- [x] **TIME-01**: User can see imported video clips on a single video track in the timeline
+- [x] **TIME-02**: User can see imported audio clips on a single audio track in the timeline
 - [x] **TIME-03**: User can trim a clip by dragging its left or right edge
 - [x] **TIME-04**: User can split a clip at a point using a blade tool
 - [x] **TIME-05**: User can delete a clip from the timeline
@@ -26,7 +26,7 @@
 
 ### Preview
 
-- [ ] **PREV-01**: User can see static frame thumbnails extracted from video clips via ffmpeg.wasm
+- [x] **PREV-01**: User can see static frame thumbnails extracted from video clips via ffmpeg.wasm
 
 ### Clip Settings
 
@@ -86,15 +86,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | IMPT-01 | Phase 2 | Complete |
 | IMPT-02 | Phase 2 | Complete |
-| TIME-01 | Phase 2 | Pending |
-| TIME-02 | Phase 2 | Pending |
+| TIME-01 | Phase 2 | Complete |
+| TIME-02 | Phase 2 | Complete |
 | TIME-03 | Phase 2 | Complete |
 | TIME-04 | Phase 2 | Complete |
 | TIME-05 | Phase 2 | Complete |
 | TIME-06 | Phase 2 | Complete |
 | UNDO-01 | Phase 2 | Complete |
 | UNDO-02 | Phase 2 | Complete |
-| PREV-01 | Phase 2 | Pending |
+| PREV-01 | Phase 2 | Complete |
 | CLIP-01 | Phase 3 | Pending |
 | CLIP-02 | Phase 3 | Pending |
 | CLIP-03 | Phase 3 | Pending |

@@ -12,11 +12,11 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@ffmpeg/core": "^0.12.10",
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
     "@tailwindcss/vite": "^4.2.1",
     "@xzdarcy/react-timeline-editor": "^1.0.0",
-    "comlink": "^4.4.2",
     "lucide-react": "^0.577.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",

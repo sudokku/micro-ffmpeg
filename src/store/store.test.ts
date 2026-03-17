@@ -265,4 +265,15 @@ describe('Store actions', () => {
     useStore.temporal.getState().undo()
     expect(useStore.getState().ui.activeTool).toBe('blade')
   })
+
+  it('deleteClip restores clip with single undo (no double-undo required)', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().deleteClip(clipId)
+    expect(useStore.getState().clips[clipId]).toBeUndefined()
+    // Single undo should restore the clip
+    useStore.temporal.getState().undo()
+    expect(useStore.getState().clips[clipId]).toBeDefined()
+    expect(useStore.getState().tracks.video.clipIds).toContain(clipId)
+  })
 })

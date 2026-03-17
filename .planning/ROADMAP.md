@@ -13,7 +13,7 @@ Four phases from zero to a fully working client-side video editor. Phase 1 lays 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Project scaffold with Zustand store, Comlink/ffmpeg worker, and @xzdarcy/react-timeline-editor wired up but empty (completed 2026-03-16)
-- [ ] **Phase 2: Timeline Core** - Import clips, display on two-track timeline, trim/split/delete/reorder, undo/redo, static thumbnails
+- [x] **Phase 2: Timeline Core** - Import clips, display on two-track timeline, trim/split/delete/reorder, undo/redo, static thumbnails (completed 2026-03-16)
 - [ ] **Phase 3: Clip Settings** - Per-clip filter panel (blur/brightness/contrast/saturation), crop rectangle, and output resize
 - [ ] **Phase 4: Export** - ffmpeg.wasm render of timeline to video file with progress display and download
 
@@ -47,7 +47,7 @@ Plans:
   4. User can delete a clip and reorder clips within a track by dragging
   5. User can press Cmd+Z to undo any clip operation and Cmd+Shift+Z to redo it; UI state is never affected by undo
   6. Video clips display a static frame thumbnail extracted from the source file via ffmpeg.wasm
-**Plans:** 3/5 plans executed
+**Plans:** 5/5 plans complete
 
 Plans:
 - [ ] 02-01-PLAN.md — Store actions (TDD): extend Clip type with color/thumbnailUrls, implement addClip/moveClip/trimClip/splitClip/deleteClip/selectClip/setActiveTool with tests
@@ -94,6 +94,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 4/4 | Complete   | 2026-03-16 |
-| 2. Timeline Core | 3/5 | In Progress|  |
+| 2. Timeline Core | 5/5 | Complete   | 2026-03-16 |
 | 3. Clip Settings | 0/2 | Not started | - |
 | 4. Export | 0/2 | Not started | - |

@@ -122,6 +122,8 @@ export const useStore = create<StoreState>()(
                 clipIds: track.clipIds.filter((id) => id !== clipId),
               },
             },
+            // Deselect in the same set() call to avoid a separate Zundo history entry
+            ui: { ...state.ui, selectedClipId: null },
           }
         })
       },

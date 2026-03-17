@@ -43,7 +43,7 @@ The timeline + store must work perfectly: clip positions and edits are reflected
 
 This is a React 19 + TypeScript project built with Vite. A previous attempt used Vue and hand-rolled timeline drag logic — that approach failed. This version hard-locks to React and `@xzdarcy/react-timeline-editor` to avoid rebuilding timeline interactions from scratch.
 
-ffmpeg.wasm runs in a dedicated Comlink-wrapped Web Worker; the main thread never imports ffmpeg directly. State is managed by Zustand with Zundo temporal middleware for undo/redo — only `tracks`, `clips`, and `clipSettings` are tracked in undo history (not `ui` or `export` state).
+ffmpeg.wasm is accessed via `@ffmpeg/ffmpeg` instantiated on the **main thread**. The `FFmpeg` class internally spawns its own worker (`@ffmpeg/ffmpeg/dist/esm/worker.js`) which loads `@ffmpeg/core` — no Comlink layer is needed or used. The `public/ffmpeg-core.js` file must be the **ESM build** (`dist/esm/`) not UMD, as the internal worker loads it via dynamic `import()` and expects a default export. State is managed by Zustand with Zundo temporal middleware for undo/redo — only `tracks`, `clips`, and `clipSettings` are tracked in undo history (not `ui` or `export` state).
 
 The timeline component is a controlled display: it reads from the store and fires callbacks that dispatch store actions. It never holds its own clip position state.
 
@@ -52,7 +52,7 @@ The timeline component is a controlled display: it reads from the store and fire
 - **Tech stack**: React 19 + TypeScript + Vite + TailwindCSS — no Vue, no other frameworks
 - **Timeline library**: `@xzdarcy/react-timeline-editor` v1.x — do NOT replace or hand-roll timeline interactions
 - **State**: Zustand + Zundo — no other state management; Zundo partialize MUST exclude `ui` and `export` slices
-- **Processing**: ffmpeg.wasm (`@ffmpeg/ffmpeg` + `@ffmpeg/util`) via Comlink Web Worker — ffmpeg never on main thread
+- **Processing**: ffmpeg.wasm via `@ffmpeg/ffmpeg` (main thread singleton) + `@ffmpeg/util` — no Comlink; `@ffmpeg/ffmpeg` manages its own internal worker; `public/ffmpeg-core.js` must be the ESM build
 - **MVP scope**: No real-time playback, no multi-track, no server
 
 ## Key Decisions
@@ -62,7 +62,7 @@ The timeline component is a controlled display: it reads from the store and fire
 | React 19 over Vue | Previous Vue attempt failed due to ecosystem mismatch with timeline component | — Pending |
 | @xzdarcy/react-timeline-editor v1.x | Battle-tested row/action data model fits video tracks; avoids hand-rolling drag/resize/snap | — Pending |
 | Zustand + Zundo temporal middleware | Minimal boilerplate; Zundo <700 bytes with partialize support to isolate undo scope | — Pending |
-| Comlink Web Worker for ffmpeg | Main thread never blocks; clean async API without manual postMessage | — Pending |
+| @ffmpeg/ffmpeg main-thread singleton | `@ffmpeg/ffmpeg` internally manages its own worker; adding Comlink on top breaks `import.meta.url` resolution inside the nested worker. Singleton loaded once on first clip import; all subsequent calls reuse it. | Implemented Phase 2 |
 | Thumbnails via ffmpeg.wasm (not video element) | Lightweight, no real-time playback overhead | — Pending |
 | Store-first design rule | Store shape designed before any UI; all components read from store, nothing communicates laterally | — Pending |
 | Zundo partialize excludes ui + export | Previous attempt's #1 bug source — UI state in undo history caused broken undo behavior | — Pending |
