@@ -2,9 +2,11 @@
 
 ## Git Commits
 
-- **Commit once per Phase**, not per task or per plan. Stage all changed files for the phase and make one commit when the phase is complete.
+- **One commit per Phase, no exceptions.** Do NOT commit mid-phase for individual plans, tasks, or checkpoints. Stage ALL changed files (source + planning docs) and make exactly one commit when the entire phase is complete — or when the user explicitly asks for a commit.
+- **Planning artifacts (`.planning/`) are part of the phase commit.** Do not make separate commits for research, requirements, roadmap, or STATE updates. Bundle them with the phase's code changes.
 - **No co-authors.** Never add `Co-Authored-By` lines or any AI/tool attribution.
 - **Short messages.** Format: `type: short description` (e.g. `feat: add clip settings panel`). No bullet bodies, no trailers.
+- **Target: ≤1 new commit per phase on GitHub.** The goal is a clean, readable history — one commit per phase, not one per file or plan.
 
 ## Code Quality
 
