@@ -83,8 +83,8 @@ Plans:
 **Plans:** 2/2 plans complete
 
 Plans:
-- [ ] 04-01-PLAN.md — Export pipeline: extract FFmpeg singleton, build filter graph from ClipSettings, store export actions, useExport hook with per-clip encode loop + progress + cancel + download
-- [ ] 04-02-PLAN.md — Export UI: TopBar format dropdown + Export/Cancel/Download button, ExportProgressBar, AppShell wiring, UI lockout, keyboard shortcut blocking, manual verification
+- [x] 04-01-PLAN.md — Export pipeline: extract FFmpeg singleton, build filter graph from ClipSettings, store export actions, useExport hook with per-clip encode loop + progress + cancel + download
+- [x] 04-02-PLAN.md — Export UI: TopBar format dropdown + Export/Cancel/Download button, ExportProgressBar, AppShell wiring, UI lockout, keyboard shortcut blocking, manual verification
 
 ## Progress
 

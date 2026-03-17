@@ -122,12 +122,12 @@ describe('buildVfFilter', () => {
 })
 
 describe('FORMAT_MAP', () => {
-  it('mp4 has ext="mp4", mime="video/mp4", codec="libx264", args with -preset fast -crf 23', () => {
+  it('mp4 has ext="mp4", mime="video/mp4", codec="libx264", args with -preset ultrafast -crf 23', () => {
     expect(FORMAT_MAP.mp4.ext).toBe('mp4')
     expect(FORMAT_MAP.mp4.mime).toBe('video/mp4')
     expect(FORMAT_MAP.mp4.codec).toBe('libx264')
     expect(FORMAT_MAP.mp4.args).toContain('-preset')
-    expect(FORMAT_MAP.mp4.args).toContain('fast')
+    expect(FORMAT_MAP.mp4.args).toContain('ultrafast')
     expect(FORMAT_MAP.mp4.args).toContain('-crf')
     expect(FORMAT_MAP.mp4.args).toContain('23')
   })

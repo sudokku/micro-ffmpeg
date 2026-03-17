@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import type { FFmpeg } from '@ffmpeg/ffmpeg'
 import { fetchFile } from '@ffmpeg/util'
 import { useStore } from '../store'
 import { getFFmpeg, enqueueFFmpegJob, resetFFmpegInstance } from '../utils/ffmpegSingleton'
@@ -31,6 +32,25 @@ function performDownload() {
   a.href = downloadUrl
   a.download = downloadFilename
   a.click()
+}
+
+/**
+ * Runs ff.exec(args), captures FFmpeg log output, and throws a clear error
+ * (with logs printed to console) if the process exits non-zero.
+ */
+async function execAndCheck(ff: FFmpeg, args: string[], label: string): Promise<void> {
+  const logs: string[] = []
+  const logHandler = ({ message }: { message: string }) => logs.push(message)
+  ff.on('log', logHandler)
+  try {
+    const exitCode = await ff.exec(args)
+    if (exitCode !== 0) {
+      console.error(`[ffmpeg] ${label} failed (exit ${exitCode}):\n${logs.join('\n')}`)
+      throw new Error(`FFmpeg ${label} failed (exit ${exitCode})`)
+    }
+  } finally {
+    ff.off('log', logHandler)
+  }
 }
 
 export function useExport() {
@@ -85,6 +105,8 @@ export function useExport() {
           await ff.writeFile(inputName, fileData)
 
           const trimStart = clip.trimStart
+          // trimClip() only updates startTime/endTime (timeline positions); trimStart/trimEnd are not
+          // kept in sync yet. Use endTime-startTime (the displayed timeline duration) for -t.
           const duration = clip.endTime - clip.startTime
 
           // Register per-clip progress handler
@@ -95,6 +117,8 @@ export function useExport() {
             useStore.getState().setExportProgress(pct)
           }
           ff.on('progress', handler)
+
+          console.log(`[export] clip ${i + 1}/${totalClips}: "${clip.sourceFile.name}" ${clip.sourceWidth}×${clip.sourceHeight} trim=${trimStart.toFixed(3)}s dur=${duration.toFixed(3)}s`)
 
           try {
             const execArgs: string[] = ['-ss', String(trimStart), '-i', inputName, '-t', String(duration)]
@@ -107,17 +131,25 @@ export function useExport() {
                 : 'fps=15,scale=480:-2:flags=lanczos'
               execArgs.push('-vf', gifVf, '-loop', '0', intermediateName)
             } else {
-              // Non-GIF: apply user filters then normalize to even dimensions
+              // Non-GIF: normalize fps, pixel format, dimensions, and color space so all
+              // intermediates are identical streams that concat -c copy can splice safely.
               const userVf = buildVfFilter(settings, clip)
-              const normalizeScale = `scale=${normWidth}:${normHeight}:force_original_aspect_ratio=decrease,pad=${normWidth}:${normHeight}:(ow-iw)/2:(oh-ih)/2`
+              // trunc() prevents fractional pad offsets on unusual aspect ratios (fix #5)
+              const normalizeScale = `scale=${normWidth}:${normHeight}:force_original_aspect_ratio=decrease,pad=${normWidth}:${normHeight}:trunc((ow-iw)/2):trunc((oh-ih)/2)`
               const vf = userVf ? `${userVf},${normalizeScale}` : normalizeScale
               execArgs.push('-vf', vf)
+              execArgs.push('-r', '30')                        // uniform frame rate
+              execArgs.push('-pix_fmt', 'yuv420p')             // uniform pixel format (fix: 10-bit / yuv422p inputs)
+              execArgs.push('-colorspace', 'bt709')            // stamp color space metadata (fix: missing tags)
+              execArgs.push('-color_trc', 'bt709')
+              execArgs.push('-color_primaries', 'bt709')
               execArgs.push('-c:v', formatConfig.codec!)
               execArgs.push(...formatConfig.args)
               execArgs.push('-an', intermediateName)
             }
 
-            await ff.exec(execArgs)
+            console.log(`[export] ffmpeg args: ${execArgs.join(' ')}`)
+            await execAndCheck(ff, execArgs, `clip ${i + 1}/${totalClips} encode`)
           } finally {
             ff.off('progress', handler)
             try { await ff.deleteFile(inputName) } catch { /* ignore */ }
@@ -142,7 +174,13 @@ export function useExport() {
             await ff.writeFile(inputName, fileData)
             const trimStart = clip.trimStart
             const duration = clip.endTime - clip.startTime
-            await ff.exec(['-ss', String(trimStart), '-i', inputName, '-t', String(duration), '-c:a', 'aac', '-b:a', '128k', outputName])
+            console.log(`[export] audio ${i + 1}: "${clip.sourceFile.name}" trim=${trimStart.toFixed(3)}s dur=${duration.toFixed(3)}s`)
+            await execAndCheck(
+              ff,
+              // -ar 48000: normalize sample rate so multi-clip audio concat -c copy never sees mismatched rates
+              ['-ss', String(trimStart), '-i', inputName, '-t', String(duration), '-c:a', 'aac', '-b:a', '128k', '-ar', '48000', outputName],
+              `audio ${i + 1} encode`,
+            )
             try { await ff.deleteFile(inputName) } catch { /* ignore */ }
           }
           if (audioClipIds.length === 1) {
@@ -150,7 +188,11 @@ export function useExport() {
           } else {
             const concatList = audioClipIds.map((_, i) => `file 'audio_${i}.aac'`).join('\n')
             await ff.writeFile('audio_concat.txt', concatList)
-            await ff.exec(['-f', 'concat', '-safe', '0', '-i', 'audio_concat.txt', '-c', 'copy', 'audio_merged.aac'])
+            await execAndCheck(
+              ff,
+              ['-f', 'concat', '-safe', '0', '-i', 'audio_concat.txt', '-c', 'copy', 'audio_merged.aac'],
+              'audio concat',
+            )
             audioIntermediateName = 'audio_merged.aac'
             try { await ff.deleteFile('audio_concat.txt') } catch { /* ignore */ }
             for (let i = 0; i < audioClipIds.length; i++) {
@@ -173,8 +215,7 @@ export function useExport() {
           try { await ff.deleteFile(intermediateFiles[0]) } catch { /* ignore */ }
         } else if (format === 'gif' && intermediateFiles.length === 1) {
           // Single-clip GIF — convert mp4 intermediate to GIF
-          const gifArgs = ['-i', intermediateFiles[0], '-loop', '0', outputFilename]
-          await ff.exec(gifArgs)
+          await execAndCheck(ff, ['-i', intermediateFiles[0], '-loop', '0', outputFilename], 'gif convert')
           try { await ff.deleteFile(intermediateFiles[0]) } catch { /* ignore */ }
           const data = await ff.readFile(outputFilename) as Uint8Array
           triggerDownload(data, outputFilename, formatConfig.mime)
@@ -184,7 +225,11 @@ export function useExport() {
           const concatContent = intermediateFiles.map((f) => `file '${f}'`).join('\n')
           await ff.writeFile('concat_list.txt', concatContent)
           const concatOutput = audioIntermediateName ? `video_only_concat.${format === 'gif' ? 'mp4' : formatConfig.ext}` : outputFilename
-          await ff.exec(['-f', 'concat', '-safe', '0', '-i', 'concat_list.txt', '-c', 'copy', concatOutput])
+          await execAndCheck(
+            ff,
+            ['-f', 'concat', '-safe', '0', '-i', 'concat_list.txt', '-c', 'copy', concatOutput],
+            'video concat',
+          )
           try { await ff.deleteFile('concat_list.txt') } catch { /* ignore */ }
           for (const f of intermediateFiles) {
             try { await ff.deleteFile(f) } catch { /* ignore */ }
@@ -192,11 +237,15 @@ export function useExport() {
 
           if (format === 'gif') {
             // Convert concatenated mp4 to GIF
-            await ff.exec(['-i', concatOutput, '-loop', '0', outputFilename])
+            await execAndCheck(ff, ['-i', concatOutput, '-loop', '0', outputFilename], 'gif convert')
             try { await ff.deleteFile(concatOutput) } catch { /* ignore */ }
           } else if (audioIntermediateName) {
             // Mux video + audio
-            await ff.exec(['-i', concatOutput, '-i', audioIntermediateName, '-c:v', 'copy', '-c:a', 'copy', outputFilename])
+            await execAndCheck(
+              ff,
+              ['-i', concatOutput, '-i', audioIntermediateName, '-c:v', 'copy', '-c:a', 'copy', outputFilename],
+              'audio/video mux',
+            )
             try { await ff.deleteFile(concatOutput) } catch { /* ignore */ }
             try { await ff.deleteFile(audioIntermediateName) } catch { /* ignore */ }
           }

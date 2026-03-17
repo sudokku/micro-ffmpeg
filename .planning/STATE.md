@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 04-export-02-PLAN.md tasks 1-2; awaiting human verification (Task 3 checkpoint)
-last_updated: "2026-03-17T10:34:33.207Z"
-last_activity: "2026-03-17 — Phase 3 Plan 02 complete: ClipSettingsPanel UI verified by user"
+stopped_at: Phase 4 complete — all plans verified, export working end-to-end with post-checkpoint bug fixes applied
+last_updated: "2026-03-17T13:35:00.000Z"
+last_activity: "2026-03-17 — Phase 4 complete: export pipeline verified by user, 7 post-checkpoint bugs fixed"
 progress:
   total_phases: 4
   completed_phases: 4
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-16)
 
 **Core value:** Timeline + store work perfectly: clip edits reflect instantly, undo/redo is flawless, export faithfully renders what the timeline shows
-**Current focus:** Phase 3 — Clip Settings
+**Current focus:** v1.0 milestone complete — all 4 phases done
 
 ## Current Position
 
-Phase: 3 of 4 (Clip Settings) — COMPLETE
+Phase: 4 of 4 (Export) — COMPLETE
 Plan: 2 of 2 in current phase
-Status: Phase 3 complete — ready for Phase 4 (Export)
-Last activity: 2026-03-17 — Phase 3 Plan 02 complete: ClipSettingsPanel UI verified by user
+Status: All phases complete — v1.0 milestone achieved
+Last activity: 2026-03-17 — Phase 4 complete: export pipeline verified end-to-end by user
 
 Progress: [██████████] 100%
 
@@ -119,6 +119,16 @@ Recent decisions affecting current work:
 - [Phase 04-export]: GIF export uses mp4 intermediates per clip then single final concat-to-GIF pass; fps=15 scale=480:-2 lanczos, no normalize scale
 - [Phase 04-export]: ExportProgressBar renders null for idle/done states — only visible during rendering and error
 - [Phase 04-export]: UI lockout applied separately to content row and timeline div so TopBar/progress bar remain interactive during export
+- [Phase 04-export BUG]: buildVfFilter used `!== null` for resize/crop checks — crashes when store fields are `undefined` (not `null`). Fixed to `!= null` (loose check catches both).
+- [Phase 04-export BUG]: ff.exec() in @ffmpeg/ffmpeg 0.12.x returns exit code instead of throwing on failure — silent failures produced ghost filenames in intermediateFiles, causing downstream ErrnoError on readFile. Fixed via execAndCheck() helper that attaches log listener, checks exit code, and throws with full FFmpeg stderr on non-zero.
+- [Phase 04-export]: libx264 preset changed from `fast` to `ultrafast` — ~23-64% faster WASM encode at same CRF 23 quality for web output.
+- [Phase 04-export BUG]: Mixed frame rate clips (e.g. 60fps + 24fps) produce corrupted concat output — concat -c copy splices bitstreams with mismatched timebases causing freeze frames and wrong playback speed. Fixed by adding `-r 30` to all per-clip encodes to normalize frame rate before concat.
+- [Phase 04-export BUG]: Missing `-pix_fmt yuv420p` — inputs with non-yuv420p pixel formats (10-bit HEVC, yuv422p) encode to different pixel formats and concat -c copy fails. Fixed by forcing `-pix_fmt yuv420p` on all non-GIF encodes.
+- [Phase 04-export BUG]: Missing color space tags on some source clips — libx264 encodes without bt709 metadata causing per-clip color rendering differences in QuickTime/Safari. Fixed by stamping `-colorspace bt709 -color_trc bt709 -color_primaries bt709` on every encode.
+- [Phase 04-export BUG]: Multiple audio clips with mismatched sample rates (44.1kHz + 48kHz) fail on `-c copy` concat. Fixed by adding `-ar 48000` to all audio clip encodes.
+- [Phase 04-export BUG]: Pad filter uses `(ow-iw)/2` — produces fractional offsets for unusual aspect ratios (2.35:1 anamorphic, 21:9) causing "Unable to create filter" ffmpeg error. Fixed to `trunc((ow-iw)/2):trunc((oh-ih)/2)`.
+- [Phase 04-export BUG]: store/index.ts initialized `trimEnd: 0` on every clip — should be `trimEnd: duration`. Fixed in addClip(). Note: trimClip() still only updates startTime/endTime (timeline positions), not trimStart/trimEnd (source trim points) — export uses `endTime - startTime` for -t duration, which is correct given the current trim model.
+- [Phase 04-export]: export pipeline logs all clip metadata and full ffmpeg args to console before each encode — enables debugging without source access.
 
 ### Pending Todos
 
@@ -130,6 +140,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-17T10:34:33.203Z
-Stopped at: Completed 04-export-02-PLAN.md tasks 1-2; awaiting human verification (Task 3 checkpoint)
+Last session: 2026-03-17T13:35:00.000Z
+Stopped at: Phase 4 fully verified — v1.0 milestone complete
 Resume file: None

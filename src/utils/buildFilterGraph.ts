@@ -1,9 +1,9 @@
 import type { ClipSettings, Clip } from '../store/types'
 
 export const FORMAT_MAP = {
-  mp4:  { ext: 'mp4',  mime: 'video/mp4',       codec: 'libx264',    args: ['-preset', 'fast', '-crf', '23'] },
+  mp4:  { ext: 'mp4',  mime: 'video/mp4',       codec: 'libx264',    args: ['-preset', 'ultrafast', '-crf', '23'] },
   webm: { ext: 'webm', mime: 'video/webm',       codec: 'libvpx-vp9', args: ['-deadline', 'realtime', '-cpu-used', '8'] },
-  mov:  { ext: 'mov',  mime: 'video/quicktime',  codec: 'libx264',    args: ['-preset', 'fast', '-crf', '23'] },
+  mov:  { ext: 'mov',  mime: 'video/quicktime',  codec: 'libx264',    args: ['-preset', 'ultrafast', '-crf', '23'] },
   gif:  { ext: 'gif',  mime: 'image/gif',         codec: null,         args: [] },
 } as const
 
@@ -25,12 +25,12 @@ export function buildVfFilter(settings: ClipSettings | undefined, _clip: Clip): 
   const filters: string[] = []
 
   // Scale (resize) — first in chain
-  if (settings.resize !== null) {
+  if (settings.resize != null) {
     filters.push(`scale=${settings.resize.width}:${settings.resize.height}`)
   }
 
   // Crop — after scale
-  if (settings.crop !== null) {
+  if (settings.crop != null) {
     const { width, height, x, y } = settings.crop
     filters.push(`crop=${width}:${height}:${x}:${y}`)
   }

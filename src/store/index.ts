@@ -41,7 +41,7 @@ export const useStore = create<StoreState>()(
             startTime,
             endTime,
             trimStart: 0,
-            trimEnd: 0,
+            trimEnd: duration,
             color,
             thumbnailUrls: [],
           }
