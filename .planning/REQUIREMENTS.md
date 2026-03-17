@@ -94,34 +94,34 @@
 
 ## Traceability
 
-*Populated by roadmapper — see ROADMAP.md*
-
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PREV-01 | — | Pending |
-| PREV-02 | — | Pending |
-| PREV-03 | — | Pending |
-| PREV-04 | — | Pending |
-| WAVE-01 | — | Pending |
-| ZOOM-01 | — | Pending |
-| ZOOM-02 | — | Pending |
-| ZOOM-03 | — | Pending |
-| SEL-01 | — | Pending |
-| SEL-02 | — | Pending |
-| SEL-03 | — | Pending |
-| SEL-04 | — | Pending |
-| CLIP-01 | — | Pending |
-| CLIP-02 | — | Pending |
-| CLIP-03 | — | Pending |
-| CLIP-04 | — | Pending |
-| CLIP-05 | — | Pending |
-| UI-01 | — | Pending |
+| PREV-01 | Phase 10 | Pending |
+| PREV-02 | Phase 10 | Pending |
+| PREV-03 | Phase 10 | Pending |
+| PREV-04 | Phase 10 | Pending |
+| WAVE-01 | Phase 7 | Pending |
+| ZOOM-01 | Phase 8 | Pending |
+| ZOOM-02 | Phase 8 | Pending |
+| ZOOM-03 | Phase 8 | Pending |
+| SEL-01 | Phase 9 | Pending |
+| SEL-02 | Phase 9 | Pending |
+| SEL-03 | Phase 9 | Pending |
+| SEL-04 | Phase 9 | Pending |
+| CLIP-01 | Phase 6 (filter) / Phase 11 (UI) | Pending |
+| CLIP-02 | Phase 6 (filter) / Phase 11 (UI) | Pending |
+| CLIP-03 | Phase 6 (filter) / Phase 11 (UI) | Pending |
+| CLIP-04 | Phase 6 (filter) / Phase 11 (UI) | Pending |
+| CLIP-05 | Phase 6 (filter) / Phase 11 (UI) | Pending |
+| UI-01 | Phase 11 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 18 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 18 ⚠️
+- Mapped to phases: 18/18 ✓
+- Unmapped: 0
+
+**Note on CLIP-01–05:** These requirements span two phases. Phase 6 delivers the export filter logic (testable via unit tests and export); Phase 11 delivers the user-visible UI controls. Phase 11 is the delivery phase for user-observable behavior.
 
 ---
 *Requirements defined: 2026-03-17*
-*Last updated: 2026-03-17 after v1.1 milestone definition*
+*Last updated: 2026-03-17 — v1.1 roadmap created, traceability populated*
