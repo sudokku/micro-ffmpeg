@@ -15,6 +15,7 @@ const baseClip: Clip = {
   trimEnd: 0,
   color: '#3b82f6',
   thumbnailUrls: [],
+  waveformPeaks: null,
 }
 
 const defaultSettings: ClipSettings = {
@@ -25,6 +26,12 @@ const defaultSettings: ClipSettings = {
   saturation: 1,
   crop: null,
   resize: null,
+  speed: 1 as const,
+  rotation: 0 as const,
+  volume: 1.0,
+  hue: 0,
+  flipH: false,
+  flipV: false,
 }
 
 describe('buildVfFilter', () => {
@@ -85,6 +92,12 @@ describe('buildVfFilter', () => {
       saturation: 1,
       crop: { x: 0, y: 0, width: 100, height: 100 },
       resize: null,
+      speed: 1 as const,
+      rotation: 0 as const,
+      volume: 1.0,
+      hue: 0,
+      flipH: false,
+      flipV: false,
     }
     const result = buildVfFilter(settings, baseClip)
     // crop should come before boxblur and eq
@@ -111,6 +124,12 @@ describe('buildVfFilter', () => {
       saturation: 1,
       crop: { x: 5, y: 5, width: 200, height: 150 },
       resize: { width: 1280, height: 720 },
+      speed: 1 as const,
+      rotation: 0 as const,
+      volume: 1.0,
+      hue: 0,
+      flipH: false,
+      flipV: false,
     }
     const result = buildVfFilter(settings, baseClip)
     const scaleIdx = result.indexOf('scale=')

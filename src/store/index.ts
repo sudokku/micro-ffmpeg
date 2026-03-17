@@ -19,7 +19,14 @@ export const useStore = create<StoreState>()(
       },
       clips: {},
       clipSettings: {},
-      ui: { selectedClipId: null, activeTool: 'select' },
+      ui: {
+        selectedClipId: null,
+        activeTool: 'select',
+        playheadTime: 0,
+        isPlaying: false,
+        pixelsPerSecond: 100,
+        selectedClipIds: [],
+      },
       export: { status: 'idle', progress: 0 },
 
       addClip: (file, trackId, duration, sourceWidth = 0, sourceHeight = 0) => {
@@ -44,6 +51,7 @@ export const useStore = create<StoreState>()(
             trimEnd: duration,
             color,
             thumbnailUrls: [],
+          waveformPeaks: null,
           }
           return {
             clips: { ...state.clips, [id]: clip },
@@ -142,7 +150,21 @@ export const useStore = create<StoreState>()(
 
       updateClipSettings: (clipId, patch) => {
         set((state) => {
-          const existing = state.clipSettings[clipId] ?? { clipId }
+          const existing = state.clipSettings[clipId] ?? {
+            clipId,
+            blur: 0,
+            brightness: 0,
+            contrast: 1,
+            saturation: 1,
+            crop: null,
+            resize: null,
+            speed: 1 as const,
+            rotation: 0 as const,
+            volume: 1.0,
+            hue: 0,
+            flipH: false,
+            flipV: false,
+          }
           return {
             clipSettings: {
               ...state.clipSettings,

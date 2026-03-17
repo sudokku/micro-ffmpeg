@@ -15,6 +15,7 @@ const mockClip: Clip = {
   trimEnd: 0,
   color: '#3b82f6',
   thumbnailUrls: [],
+  waveformPeaks: null,
 }
 
 beforeEach(() => {
@@ -26,7 +27,14 @@ beforeEach(() => {
     },
     clips: {},
     clipSettings: {},
-    ui: { selectedClipId: null, activeTool: 'select' },
+    ui: {
+      selectedClipId: null,
+      activeTool: 'select',
+      playheadTime: 0,
+      isPlaying: false,
+      pixelsPerSecond: 100,
+      selectedClipIds: [],
+    },
     export: { status: 'idle', progress: 0 },
   })
   // Clear temporal history
@@ -63,9 +71,32 @@ describe('Zustand store shape', () => {
     expect(clipSettings).toEqual({})
   })
 
-  it('Test 6: ui has selectedClipId: null and activeTool: "select"', () => {
+  it('Test 6: ui has all default fields', () => {
     const { ui } = useStore.getState()
-    expect(ui).toEqual({ selectedClipId: null, activeTool: 'select' })
+    expect(ui).toEqual({
+      selectedClipId: null,
+      activeTool: 'select',
+      playheadTime: 0,
+      isPlaying: false,
+      pixelsPerSecond: 100,
+      selectedClipIds: [],
+    })
+  })
+
+  it('Test 6a: ui.playheadTime defaults to 0', () => {
+    expect(useStore.getState().ui.playheadTime).toBe(0)
+  })
+
+  it('Test 6b: ui.isPlaying defaults to false', () => {
+    expect(useStore.getState().ui.isPlaying).toBe(false)
+  })
+
+  it('Test 6c: ui.pixelsPerSecond defaults to 100', () => {
+    expect(useStore.getState().ui.pixelsPerSecond).toBe(100)
+  })
+
+  it('Test 6d: ui.selectedClipIds defaults to empty array', () => {
+    expect(useStore.getState().ui.selectedClipIds).toEqual([])
   })
 
   it('Test 7: export has status: "idle" and progress: 0', () => {
@@ -85,6 +116,24 @@ describe('Zundo partialize', () => {
     useStore.setState({ clips: { c1: mockClip } })
     useStore.temporal.getState().undo()
     expect(useStore.getState().clips).toEqual({})
+  })
+
+  it('Test 10: new UiState fields (playheadTime, isPlaying, pixelsPerSecond, selectedClipIds) are NOT reverted by undo', () => {
+    useStore.setState({
+      ui: {
+        ...useStore.getState().ui,
+        playheadTime: 5.0,
+        isPlaying: true,
+        pixelsPerSecond: 200,
+        selectedClipIds: ['clip-1', 'clip-2'],
+      },
+    })
+    useStore.temporal.getState().undo()
+    const { ui } = useStore.getState()
+    expect(ui.playheadTime).toBe(5.0)
+    expect(ui.isPlaying).toBe(true)
+    expect(ui.pixelsPerSecond).toBe(200)
+    expect(ui.selectedClipIds).toEqual(['clip-1', 'clip-2'])
   })
 })
 
@@ -128,6 +177,13 @@ describe('Store actions', () => {
     expect(clips[firstId].endTime).toBe(5)
     expect(clips[secondId].startTime).toBe(5)
     expect(clips[secondId].endTime).toBe(13)
+  })
+
+  it('addClip creates a clip with waveformPeaks: null', () => {
+    useStore.getState().addClip(mockFile, 'video', mockDuration)
+    const { clips } = useStore.getState()
+    const clipId = Object.keys(clips)[0]
+    expect(clips[clipId].waveformPeaks).toBeNull()
   })
 
   it('addClip assigns rotating colors — clip 1 gets CLIP_COLORS[0], clip 2 gets CLIP_COLORS[1]', () => {
@@ -328,6 +384,48 @@ describe('ClipSettings actions', () => {
     const resize = { width: 1280, height: 720 }
     useStore.getState().updateClipSettings(clipId, { resize })
     expect(useStore.getState().clipSettings[clipId].resize).toEqual(resize)
+  })
+
+  it('updateClipSettings stores speed in clipSettings[clipId]', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().updateClipSettings(clipId, { speed: 2 })
+    expect(useStore.getState().clipSettings[clipId].speed).toBe(2)
+  })
+
+  it('updateClipSettings stores rotation in clipSettings[clipId]', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().updateClipSettings(clipId, { rotation: 90 })
+    expect(useStore.getState().clipSettings[clipId].rotation).toBe(90)
+  })
+
+  it('updateClipSettings stores volume in clipSettings[clipId]', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().updateClipSettings(clipId, { volume: 1.5 })
+    expect(useStore.getState().clipSettings[clipId].volume).toBe(1.5)
+  })
+
+  it('updateClipSettings stores hue in clipSettings[clipId]', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().updateClipSettings(clipId, { hue: 90 })
+    expect(useStore.getState().clipSettings[clipId].hue).toBe(90)
+  })
+
+  it('updateClipSettings stores flipH in clipSettings[clipId]', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().updateClipSettings(clipId, { flipH: true })
+    expect(useStore.getState().clipSettings[clipId].flipH).toBe(true)
+  })
+
+  it('updateClipSettings stores flipV in clipSettings[clipId]', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().updateClipSettings(clipId, { flipV: true })
+    expect(useStore.getState().clipSettings[clipId].flipV).toBe(true)
   })
 
   it('updateClipSettings merges partial updates — both fields present after two calls', () => {

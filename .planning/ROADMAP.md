@@ -21,7 +21,7 @@
 
 **Milestone Goal:** Transform the functional v1.0 editor into a real NLE feel — live preview with playback, timeline zoom, audio waveforms, multi-clip selection, enhanced per-clip settings, and iMovie-style UI polish.
 
-- [ ] **Phase 5: Store Foundation** — Extend store schema for all v1.1 features; zero UI changes
+- [x] **Phase 5: Store Foundation** — Extend store schema for all v1.1 features; zero UI changes
 - [ ] **Phase 6: Filter Graph** — Add speed/rotation/volume/hue/flip to the ffmpeg filter pipeline
 - [ ] **Phase 7: Waveform Infrastructure** — Extract and render audio waveforms on timeline clips
 - [ ] **Phase 8: Timeline Zoom** — Wire +/- buttons and modifier+scroll zoom to the timeline
@@ -41,7 +41,9 @@
   3. `Clip` has a `waveformPeaks: number[] | null` field
   4. Zundo `partialize` still excludes all `UiState` fields (no new undo pollution)
   5. All existing v1.0 features work without regression
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [x] 05-01-PLAN.md — Extend store types, defaults, and tests for v1.1 fields
 
 ### Phase 6: Filter Graph
 **Goal**: Every new per-clip property (speed, rotation, volume, hue, flip) is correctly encoded in the ffmpeg filter chain — export produces correct output for all settings combinations, including edge-case speed presets
@@ -103,7 +105,7 @@
 **Depends on**: Phases 6, 9, 10
 **Requirements**: CLIP-01, CLIP-02, CLIP-03, CLIP-04, CLIP-05 (UI side), UI-01
 **Success Criteria** (what must be TRUE):
-  1. ClipSettingsPanel shows speed preset buttons (0.25×/0.5×/1×/2×/4×), rotation picker (0°/90°/180°/270°), volume slider (0–200%), hue slider, and flip H/V toggles for the selected clip
+  1. ClipSettingsPanel shows speed preset buttons (0.25x/0.5x/1x/2x/4x), rotation picker (0/90/180/270), volume slider (0-200%), hue slider, and flip H/V toggles for the selected clip
   2. All clip settings controls apply to all selected clips when multiple are selected
   3. The editor presents an iMovie-style three-panel layout: preview (center-top), settings sidebar (right), timeline (bottom) with consistent spacing and button styling
 **Plans**: TBD
@@ -118,7 +120,7 @@
 | 2. Timeline Core | v1.0 | 5/5 | Complete | 2026-03-16 |
 | 3. Clip Settings | v1.0 | 2/2 | Complete | 2026-03-17 |
 | 4. Export | v1.0 | 2/2 | Complete | 2026-03-17 |
-| 5. Store Foundation | v1.1 | 0/TBD | Not started | - |
+| 5. Store Foundation | v1.1 | Complete    | 2026-03-17 | 2026-03-17 |
 | 6. Filter Graph | v1.1 | 0/TBD | Not started | - |
 | 7. Waveform Infrastructure | v1.1 | 0/TBD | Not started | - |
 | 8. Timeline Zoom | v1.1 | 0/TBD | Not started | - |

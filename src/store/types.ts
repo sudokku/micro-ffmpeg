@@ -11,6 +11,7 @@ export interface Clip {
   trimEnd: number
   color: string
   thumbnailUrls: string[]
+  waveformPeaks: number[] | null
 }
 
 export interface Track {
@@ -26,11 +27,21 @@ export interface ClipSettings {
   saturation: number     // 0.0 to 3.0 float; maps to ffmpeg eq:saturation (default 1.0)
   crop: { x: number; y: number; width: number; height: number } | null
   resize: { width: number; height: number } | null
+  speed: 0.25 | 0.5 | 1 | 2 | 4
+  rotation: 0 | 90 | 180 | 270
+  volume: number
+  hue: number
+  flipH: boolean
+  flipV: boolean
 }
 
 export interface UiState {
   selectedClipId: string | null
   activeTool: 'select' | 'blade'
+  playheadTime: number
+  isPlaying: boolean
+  pixelsPerSecond: number
+  selectedClipIds: string[]
 }
 
 export interface ExportState {
