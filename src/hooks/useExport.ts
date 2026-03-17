@@ -15,7 +15,7 @@ let downloadFilename: string = ''
  * Exported for unit testing.
  * Returns the created object URL.
  */
-export function triggerDownload(data: Uint8Array, filename: string, mimeType: string): string {
+export function triggerDownload(data: Uint8Array<ArrayBuffer>, filename: string, mimeType: string): string {
   if (downloadUrl) URL.revokeObjectURL(downloadUrl)
   const blob = new Blob([data], { type: mimeType })
   downloadUrl = URL.createObjectURL(blob)
@@ -210,14 +210,14 @@ export function useExport() {
       await enqueueFFmpegJob(async () => {
         if (intermediateFiles.length === 1 && !audioIntermediateName && format !== 'gif') {
           // Single clip, no audio, non-GIF — read directly
-          const data = await ff.readFile(intermediateFiles[0]) as Uint8Array
+          const data = await ff.readFile(intermediateFiles[0]) as Uint8Array<ArrayBuffer>
           triggerDownload(data, outputFilename, formatConfig.mime)
           try { await ff.deleteFile(intermediateFiles[0]) } catch { /* ignore */ }
         } else if (format === 'gif' && intermediateFiles.length === 1) {
           // Single-clip GIF — convert mp4 intermediate to GIF
           await execAndCheck(ff, ['-i', intermediateFiles[0], '-loop', '0', outputFilename], 'gif convert')
           try { await ff.deleteFile(intermediateFiles[0]) } catch { /* ignore */ }
-          const data = await ff.readFile(outputFilename) as Uint8Array
+          const data = await ff.readFile(outputFilename) as Uint8Array<ArrayBuffer>
           triggerDownload(data, outputFilename, formatConfig.mime)
           try { await ff.deleteFile(outputFilename) } catch { /* ignore */ }
         } else {
@@ -250,7 +250,7 @@ export function useExport() {
             try { await ff.deleteFile(audioIntermediateName) } catch { /* ignore */ }
           }
 
-          const data = await ff.readFile(outputFilename) as Uint8Array
+          const data = await ff.readFile(outputFilename) as Uint8Array<ArrayBuffer>
           triggerDownload(data, outputFilename, formatConfig.mime)
           try { await ff.deleteFile(outputFilename) } catch { /* ignore */ }
         }

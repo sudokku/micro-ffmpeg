@@ -1,99 +1,26 @@
 # Roadmap: micro-ffmpeg
 
-## Overview
+## Milestones
 
-Four phases from zero to a fully working client-side video editor. Phase 1 lays the technical chassis (React 19 + Zustand + Comlink worker). Phase 2 delivers the full timeline editing experience including import, clip operations, undo/redo, and thumbnails. Phase 3 adds the per-clip settings panel (filters, crop, resize). Phase 4 wires in export rendering and download.
+- ✅ **v1.0 MVP** — Phases 1-4 (shipped 2026-03-17) — see [milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 
 ## Phases
 
-**Phase Numbering:**
-- Integer phases (1, 2, 3): Planned milestone work
-- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
+<details>
+<summary>✅ v1.0 MVP (Phases 1-4) — SHIPPED 2026-03-17</summary>
 
-Decimal phases appear between their surrounding integers in numeric order.
+- [x] Phase 1: Foundation (4/4 plans) — completed 2026-03-16
+- [x] Phase 2: Timeline Core (5/5 plans) — completed 2026-03-16
+- [x] Phase 3: Clip Settings (2/2 plans) — completed 2026-03-17
+- [x] Phase 4: Export (2/2 plans) — completed 2026-03-17
 
-- [x] **Phase 1: Foundation** - Project scaffold with Zustand store, Comlink/ffmpeg worker, and @xzdarcy/react-timeline-editor wired up but empty (completed 2026-03-16)
-- [x] **Phase 2: Timeline Core** - Import clips, display on two-track timeline, trim/split/delete/reorder, undo/redo, static thumbnails (completed 2026-03-16)
-- [x] **Phase 3: Clip Settings** - Per-clip filter panel (blur/brightness/contrast/saturation), crop rectangle, and output resize (completed 2026-03-17)
-- [x] **Phase 4: Export** - ffmpeg.wasm render of timeline to video file with progress display and download (completed 2026-03-17)
-
-## Phase Details
-
-### Phase 1: Foundation
-**Goal**: The technical chassis is assembled and all moving parts can communicate before any user-facing feature is built
-**Depends on**: Nothing (first phase)
-**Requirements**: None (pure infrastructure — all v1 requirements land in Phases 2-4)
-**Success Criteria** (what must be TRUE):
-  1. Vite dev server starts and renders a React 19 app with TailwindCSS applied
-  2. Zustand store is initialised with `tracks`, `clips`, and `clipSettings` slices; Zundo temporal middleware is wired and excludes `ui` and `export` slices
-  3. Comlink-wrapped ffmpeg.wasm Web Worker loads and responds to a `ping` call from the main thread without blocking the UI
-  4. @xzdarcy/react-timeline-editor renders an empty two-row (video + audio) timeline component on screen
-**Plans:** 4/4 plans complete
-
-Plans:
-- [x] 01-01-PLAN.md — Project scaffold: Vite + React 19 + TypeScript + TailwindCSS v4, all dependencies, Vitest, COOP/COEP headers
-- [x] 01-02-PLAN.md — Zustand store + Zundo: store types, five slices, temporal middleware with partialize, unit tests
-- [x] 01-03-PLAN.md — Comlink ffmpeg worker: worker file, proxy factory, ping smoke test
-- [x] 01-04-PLAN.md — Timeline shell: AppShell layout, TopBar, TimelinePanel with two empty rows, render test
-
-### Phase 2: Timeline Core
-**Goal**: Users can import video and audio files, see them on the timeline, edit clips (trim, split, delete, reorder), undo/redo every operation, and see thumbnail previews
-**Depends on**: Phase 1
-**Requirements**: IMPT-01, IMPT-02, TIME-01, TIME-02, TIME-03, TIME-04, TIME-05, TIME-06, UNDO-01, UNDO-02, PREV-01
-**Success Criteria** (what must be TRUE):
-  1. User can drag-and-drop or file-pick a video or audio file and see it appear as a clip on the correct track
-  2. User can drag a clip edge to trim it and the clip immediately updates its bounds in the timeline
-  3. User can activate the blade tool and click a clip to split it into two independent clips at that point
-  4. User can delete a clip and reorder clips within a track by dragging
-  5. User can press Cmd+Z to undo any clip operation and Cmd+Shift+Z to redo it; UI state is never affected by undo
-  6. Video clips display a static frame thumbnail extracted from the source file via ffmpeg.wasm
-**Plans:** 5/5 plans complete
-
-Plans:
-- [ ] 02-01-PLAN.md — Store actions (TDD): extend Clip type with color/thumbnailUrls, implement addClip/moveClip/trimClip/splitClip/deleteClip/selectClip/setActiveTool with tests
-- [ ] 02-02-PLAN.md — UI shell: ToolSidebar with Select/Blade tools, AppShell layout update, keyboard shortcuts (V/B/Cmd+Z/Cmd+Shift+Z/Delete)
-- [ ] 02-03-PLAN.md — File import: drag-and-drop + file picker, DropOverlay, EmptyState, MIME routing, duration detection
-- [ ] 02-04-PLAN.md — Timeline wiring: deriveEditorData, ClipAction renderer, all timeline callbacks (move/resize/click), store-driven display
-- [ ] 02-05-PLAN.md — Thumbnails: ffmpeg worker extractFrames, computeTimestamps, useThumbnailExtractor hook, manual smoke test
-
-### Phase 3: Clip Settings
-**Goal**: Users can select any clip and apply per-clip visual filters, a crop rectangle, and output resize dimensions; all settings persist in the store and are undo-able
-**Depends on**: Phase 2
-**Requirements**: CLIP-01, CLIP-02, CLIP-03, CLIP-04, CLIP-05, CLIP-06
-**Success Criteria** (what must be TRUE):
-  1. Selecting a clip opens a settings panel showing its current filter values (blur, brightness, contrast, saturation)
-  2. Adjusting any filter slider immediately updates the store value for that clip
-  3. User can draw or enter a crop rectangle for the selected clip and the value is stored per-clip
-  4. User can enter output resize dimensions (width x height) for the selected clip and the value is stored per-clip
-  5. Clip settings changes are included in undo/redo history via Zundo
-**Plans:** 2/2 plans complete
-
-Plans:
-- [ ] 03-01-PLAN.md — ClipSettings store extension (TDD): extend ClipSettings interface with filter/crop/resize fields, add updateClipSettings action, add sourceWidth/sourceHeight to Clip, extract dimensions during import
-- [ ] 03-02-PLAN.md — Settings panel UI: ClipSettingsPanel component with filter sliders, crop inputs, resize inputs with aspect-ratio lock, wired into AppShell right sidebar
-
-### Phase 4: Export
-**Goal**: Users can render the full timeline to a video file, watch export progress, and download the result
-**Depends on**: Phase 3
-**Requirements**: EXPO-01, EXPO-02, EXPO-03
-**Success Criteria** (what must be TRUE):
-  1. User can trigger export from a button and the ffmpeg.wasm worker begins rendering the timeline clips in order
-  2. A progress indicator updates in real time (percentage) while rendering is in progress
-  3. When rendering completes the user can download the output video file from the browser
-**Plans:** 2/2 plans complete
-
-Plans:
-- [x] 04-01-PLAN.md — Export pipeline: extract FFmpeg singleton, build filter graph from ClipSettings, store export actions, useExport hook with per-clip encode loop + progress + cancel + download
-- [x] 04-02-PLAN.md — Export UI: TopBar format dropdown + Export/Cancel/Download button, ExportProgressBar, AppShell wiring, UI lockout, keyboard shortcut blocking, manual verification
+</details>
 
 ## Progress
 
-**Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4
-
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Foundation | 4/4 | Complete   | 2026-03-16 |
-| 2. Timeline Core | 5/5 | Complete   | 2026-03-16 |
-| 3. Clip Settings | 2/2 | Complete    | 2026-03-17 |
-| 4. Export | 2/2 | Complete   | 2026-03-17 |
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 1. Foundation | v1.0 | 4/4 | Complete | 2026-03-16 |
+| 2. Timeline Core | v1.0 | 5/5 | Complete | 2026-03-16 |
+| 3. Clip Settings | v1.0 | 2/2 | Complete | 2026-03-17 |
+| 4. Export | v1.0 | 2/2 | Complete | 2026-03-17 |

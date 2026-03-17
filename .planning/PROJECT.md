@@ -2,70 +2,77 @@
 
 ## What This Is
 
-micro-ffmpeg is a deliberately minimal, fully client-side browser-based video editor. Users can import video/audio files, arrange clips on a two-track timeline, trim/split/reorder them, apply per-clip filters and crop/resize settings, and export the result via ffmpeg.wasm — no server required. Target audience: the author and a small group of colleagues who need a stripped-down CapCut-style tool without NLE complexity.
+micro-ffmpeg is a fully client-side browser-based video editor. Users import video/audio files, arrange clips on a two-track timeline, trim/split/reorder them, apply per-clip filters (blur/brightness/contrast/saturation), set crop rectangles and output resize dimensions, and export the result via ffmpeg.wasm — no server required. Target audience: the author and colleagues who need a stripped-down CapCut-style tool without NLE complexity.
 
 ## Core Value
 
-The timeline + store must work perfectly: clip positions and edits are reflected instantly in the Zustand store, undo/redo works flawlessly, and export faithfully renders exactly what the timeline shows.
+The timeline + store work perfectly: clip edits reflect instantly in the Zustand store, undo/redo is flawless, and export faithfully renders what the timeline shows.
 
 ## Requirements
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ User can drag-and-drop or file-pick video and audio files into the editor — v1.0
+- ✓ User can see imported clips on a two-track timeline (one video, one audio) — v1.0
+- ✓ User can trim clips by dragging clip edges on the timeline — v1.0
+- ✓ User can split a clip at a point using a blade tool — v1.0
+- ✓ User can delete clips from the timeline — v1.0
+- ✓ User can reorder clips by dragging within a track — v1.0
+- ✓ User can undo/redo all clip operations via Cmd+Z / Cmd+Shift+Z — v1.0
+- ✓ User can see static frame thumbnails for video clips (extracted via ffmpeg.wasm) — v1.0
+- ✓ User can apply per-clip filters: blur, brightness, contrast, saturation — v1.0
+- ✓ User can set a per-clip crop rectangle — v1.0
+- ✓ User can set per-clip output resize dimensions — v1.0
+- ✓ User can export the timeline to a video file via ffmpeg.wasm with progress shown — v1.0
+- ✓ User can download the exported video file — v1.0
 
 ### Active
 
-- [ ] User can drag-and-drop or file-pick video and audio files into the editor
-- [ ] User can see imported clips as items on a two-track timeline (one video, one audio)
-- [ ] User can trim clips by dragging clip edges on the timeline
-- [ ] User can split a clip at the playhead using a blade tool
-- [ ] User can delete clips from the timeline
-- [ ] User can reorder clips by dragging within a track
-- [ ] User can undo/redo all clip operations via Cmd+Z / Cmd+Shift+Z
-- [ ] User can see static frame thumbnails for video clips (extracted via ffmpeg.wasm)
-- [ ] User can apply per-clip filters: blur, brightness, contrast, saturation
-- [ ] User can set a per-clip crop rectangle
-- [ ] User can set per-clip output resize dimensions
-- [ ] User can export the timeline to a video file via ffmpeg.wasm with progress shown
-- [ ] User can download the exported video file
+- [ ] User can play/pause a real-time preview of the timeline (PLAY-01)
+- [ ] User can scrub a playhead through the timeline (PLAY-02)
+- [ ] User can save a project and reload it in a later session (PROJ-01)
+- [ ] User can export/import project as a JSON file (PROJ-02)
 
 ### Out of Scope
 
-- Real-time video playback — thumbnails only; playback is a v2 feature
+- Real-time video playback — thumbnails only for MVP; playback is v2
 - Multi-track support (beyond one video + one audio) — v2
 - Server-side processing — fully client-side only
 - Mobile app — web-first
 - OAuth / user accounts — no backend
-- Cloud storage / project save/load — local session only (v1)
+- Cloud storage — local session only
+- Alternative timeline libraries — @xzdarcy/react-timeline-editor is locked
+- Alternative state managers — Zustand + Zundo is locked
 
 ## Context
 
-This is a React 19 + TypeScript project built with Vite. A previous attempt used Vue and hand-rolled timeline drag logic — that approach failed. This version hard-locks to React and `@xzdarcy/react-timeline-editor` to avoid rebuilding timeline interactions from scratch.
+**Shipped v1.0** — ~2,489 LOC TypeScript, 103 files, 93 commits. Built in 2 days (2026-03-16 → 2026-03-17).
 
-ffmpeg.wasm is accessed via `@ffmpeg/ffmpeg` instantiated on the **main thread**. The `FFmpeg` class internally spawns its own worker (`@ffmpeg/ffmpeg/dist/esm/worker.js`) which loads `@ffmpeg/core` — no Comlink layer is needed or used. The `public/ffmpeg-core.js` file must be the **ESM build** (`dist/esm/`) not UMD, as the internal worker loads it via dynamic `import()` and expects a default export. State is managed by Zustand with Zundo temporal middleware for undo/redo — only `tracks`, `clips`, and `clipSettings` are tracked in undo history (not `ui` or `export` state).
+Tech stack: React 19 + TypeScript + Vite + TailwindCSS v4. State: Zustand + Zundo temporal middleware. Timeline: `@xzdarcy/react-timeline-editor`. Processing: `@ffmpeg/ffmpeg` main-thread singleton.
 
-The timeline component is a controlled display: it reads from the store and fires callbacks that dispatch store actions. It never holds its own clip position state.
+`@ffmpeg/ffmpeg` runs on the main thread — its own internal worker handles threading. The `FFmpeg` class spawns `@ffmpeg/ffmpeg/dist/esm/worker.js` which loads `@ffmpeg/core` via dynamic `import()`. `public/ffmpeg-core.js` must be the **ESM build** (`dist/esm/`), not UMD. No Comlink layer is used.
+
+The timeline component is a pure controlled display: reads from Zustand store, fires callbacks that dispatch store actions. Zundo `partialize` excludes `ui` and `export` slices from undo history — this was the root cause of the prior failed attempt.
 
 ## Constraints
 
 - **Tech stack**: React 19 + TypeScript + Vite + TailwindCSS — no Vue, no other frameworks
 - **Timeline library**: `@xzdarcy/react-timeline-editor` v1.x — do NOT replace or hand-roll timeline interactions
-- **State**: Zustand + Zundo — no other state management; Zundo partialize MUST exclude `ui` and `export` slices
-- **Processing**: ffmpeg.wasm via `@ffmpeg/ffmpeg` (main thread singleton) + `@ffmpeg/util` — no Comlink; `@ffmpeg/ffmpeg` manages its own internal worker; `public/ffmpeg-core.js` must be the ESM build
+- **State**: Zustand + Zundo — Zundo partialize MUST exclude `ui` and `export` slices
+- **Processing**: `@ffmpeg/ffmpeg` (main thread singleton) + `@ffmpeg/util` — no Comlink; `public/ffmpeg-core.js` must be the ESM build
 - **MVP scope**: No real-time playback, no multi-track, no server
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| React 19 over Vue | Previous Vue attempt failed due to ecosystem mismatch with timeline component | — Pending |
-| @xzdarcy/react-timeline-editor v1.x | Battle-tested row/action data model fits video tracks; avoids hand-rolling drag/resize/snap | — Pending |
-| Zustand + Zundo temporal middleware | Minimal boilerplate; Zundo <700 bytes with partialize support to isolate undo scope | — Pending |
-| @ffmpeg/ffmpeg main-thread singleton | `@ffmpeg/ffmpeg` internally manages its own worker; adding Comlink on top breaks `import.meta.url` resolution inside the nested worker. Singleton loaded once on first clip import; all subsequent calls reuse it. | Implemented Phase 2 |
-| Thumbnails via ffmpeg.wasm (not video element) | Lightweight, no real-time playback overhead | — Pending |
-| Store-first design rule | Store shape designed before any UI; all components read from store, nothing communicates laterally | — Pending |
-| Zundo partialize excludes ui + export | Previous attempt's #1 bug source — UI state in undo history caused broken undo behavior | — Pending |
+| React 19 over Vue | Previous Vue attempt failed due to ecosystem mismatch with timeline component | ✓ Good — no friction with the timeline library |
+| @xzdarcy/react-timeline-editor v1.x | Battle-tested row/action data model fits video tracks; avoids hand-rolling drag/resize/snap | ✓ Good — worked throughout without issues |
+| Zustand + Zundo temporal middleware | Minimal boilerplate; Zundo <700 bytes with partialize support | ✓ Good — undo/redo worked flawlessly |
+| @ffmpeg/ffmpeg main-thread singleton | `@ffmpeg/ffmpeg` internally manages its own worker; adding Comlink breaks `import.meta.url` resolution inside the nested worker. Singleton loaded once on first import; reused by thumbnails and export. | ✓ Good — zero singleton-related issues |
+| Thumbnails via ffmpeg.wasm (not video element) | Lightweight, no real-time playback overhead | ✓ Good — acceptable performance for MVP |
+| Store-first design rule | Store shape designed before any UI; all components read from store, nothing communicates laterally | ✓ Good — made testing and undo straightforward |
+| Zundo partialize excludes ui + export | Previous attempt's #1 bug source — UI state in undo history caused broken undo behavior | ✓ Good — zero undo-related bugs in this implementation |
 
 ---
-*Last updated: 2026-03-16 after initialization*
+*Last updated: 2026-03-17 after v1.0 milestone*

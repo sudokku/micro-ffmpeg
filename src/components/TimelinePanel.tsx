@@ -1,12 +1,12 @@
 import { useMemo, useCallback } from 'react'
 import { Timeline } from '@xzdarcy/react-timeline-editor'
-import type { TimelineRow, TimelineAction, TimelineEffect } from '@xzdarcy/react-timeline-editor'
+import type { TimelineRow, TimelineAction, TimelineEffect } from '@xzdarcy/timeline-engine'
 import '@xzdarcy/react-timeline-editor/dist/react-timeline-editor.css'
 import { useStore } from '../store'
 import { deriveEditorData } from '../utils/deriveEditorData'
 import { ClipAction } from './ClipAction'
 
-const effects: Record<string, TimelineEffect> = { default: {} }
+const effects: Record<string, TimelineEffect> = { default: { id: 'default' } }
 
 export function TimelinePanel() {
   const tracks = useStore((s) => s.tracks)

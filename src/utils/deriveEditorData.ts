@@ -1,4 +1,4 @@
-import type { TimelineRow } from '@xzdarcy/react-timeline-editor'
+import type { TimelineRow } from '@xzdarcy/timeline-engine'
 import type { StoreState } from '../store/types'
 
 export function deriveEditorData(

@@ -43,7 +43,7 @@ export function useThumbnailExtractor() {
               // -q:v 3: good JPEG quality without wasting WASM heap on large output.
               await ff.exec(['-ss', '0', '-i', inputName, '-frames:v', '1', '-vf', 'scale=160:-2', '-q:v', '3', thumbName])
 
-              const data = await ff.readFile(thumbName) as Uint8Array
+              const data = await ff.readFile(thumbName) as Uint8Array<ArrayBuffer>
               await ff.deleteFile(thumbName)
               await ff.deleteFile(inputName)
 
