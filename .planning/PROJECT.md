@@ -28,14 +28,24 @@ The timeline + store work perfectly: clip edits reflect instantly in the Zustand
 
 ### Active
 
-- [ ] User can play/pause a real-time preview of the timeline (PLAY-01)
-- [ ] User can scrub a playhead through the timeline (PLAY-02)
-- [ ] User can save a project and reload it in a later session (PROJ-01)
-- [ ] User can export/import project as a JSON file (PROJ-02)
+- [ ] User can see a real-time preview of the current timeline frame in the central panel (PREV-01)
+- [ ] User can play/pause timeline playback with audio (PREV-02)
+- [ ] User can see a timecode display in the preview panel (PREV-03)
+- [ ] User can zoom the timeline in and out via +/- buttons and modifier+scroll (ZOOM-01)
+- [ ] User can see audio waveforms on audio clips in the timeline (WAVE-01)
+- [ ] User can select multiple clips via Cmd/Ctrl+click (SEL-01)
+- [ ] User can delete all selected clips at once (SEL-02)
+- [ ] User can apply clip settings to all selected clips simultaneously (SEL-03)
+- [ ] User can move selected clips together by dragging one (SEL-04)
+- [ ] User can set per-clip playback speed (0.25×/0.5×/1×/2×/4×) (CLIP-01)
+- [ ] User can set per-clip rotation (preset angles: 0°/90°/180°/270°) (CLIP-02)
+- [ ] User can set per-clip volume (CLIP-03)
+- [ ] User can set per-clip hue shift (CLIP-04)
+- [ ] User can flip a clip horizontally or vertically (CLIP-05)
+- [ ] User sees a polished iMovie-style UI (preview panel, sidebar, timeline, buttons) (UI-01)
 
 ### Out of Scope
 
-- Real-time video playback — thumbnails only for MVP; playback is v2
 - Multi-track support (beyond one video + one audio) — v2
 - Server-side processing — fully client-side only
 - Mobile app — web-first
@@ -74,5 +84,18 @@ The timeline component is a pure controlled display: reads from Zustand store, f
 | Store-first design rule | Store shape designed before any UI; all components read from store, nothing communicates laterally | ✓ Good — made testing and undo straightforward |
 | Zundo partialize excludes ui + export | Previous attempt's #1 bug source — UI state in undo history caused broken undo behavior | ✓ Good — zero undo-related bugs in this implementation |
 
+## Current Milestone: v1.1 Preview & Polish
+
+**Goal:** Add real-time preview with playback, timeline zoom, audio waveforms, multi-clip selection, enhanced clip settings, and a focused UI polish pass.
+
+**Target features:**
+- Real-time preview panel (HTML5 video + Canvas, play/pause, timecode, playhead sync)
+- Timeline zoom (+/- buttons + modifier+scroll)
+- Audio waveforms (Web Audio API OfflineAudioContext)
+- Multi-clip selection (Cmd/Ctrl+click — delete, bulk settings, move together)
+- Per-clip speed presets (0.25×/0.5×/1×/2×/4×)
+- Additional clip settings: rotation, volume, hue shift, flip H/V
+- Focused UI polish (iMovie-style: preview layout, sidebar, timeline, buttons)
+
 ---
-*Last updated: 2026-03-17 after v1.0 milestone*
+*Last updated: 2026-03-17 — v1.1 milestone started*

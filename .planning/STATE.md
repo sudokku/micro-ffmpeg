@@ -1,17 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: completed
-stopped_at: Phase 4 fully verified — v1.0 milestone complete
-last_updated: "2026-03-17T12:52:57.951Z"
-last_activity: "2026-03-17 — Phase 4 complete: export pipeline verified end-to-end by user"
+milestone: v1.1
+milestone_name: Preview & Polish
+status: in_progress
+stopped_at: —
+last_updated: "2026-03-17T00:00:00.000Z"
+last_activity: "2026-03-17 — Milestone v1.1 started"
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 13
-  completed_plans: 13
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-17)
 
 **Core value:** Timeline + store work perfectly: clip edits reflect instantly, undo/redo is flawless, export faithfully renders what the timeline shows
-**Current focus:** Planning next milestone — run /gsd:new-milestone
+**Current focus:** Milestone v1.1 — Preview & Polish
 
 ## Current Position
 
-Phase: 4 of 4 (Export) — COMPLETE
-Plan: 2 of 2 in current phase
-Status: All phases complete — v1.0 milestone achieved
-Last activity: 2026-03-17 — Phase 4 complete: export pipeline verified end-to-end by user
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-17 — Milestone v1.1 started
 
 Progress: [██████████] 100%
 
