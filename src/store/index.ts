@@ -151,11 +151,19 @@ export const useStore = create<StoreState>()(
           }
         })
       },
+
+      setExportStatus: (status) => {
+        set((state) => ({ export: { ...state.export, status } }))
+      },
+
+      setExportProgress: (progress) => {
+        set((state) => ({ export: { ...state.export, progress } }))
+      },
     }),
     {
       partialize: (state): TrackedState => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { ui, export: _export, addClip, moveClip, trimClip, splitClip, deleteClip, selectClip, setActiveTool, updateClipSettings, ...tracked } = state
+        const { ui, export: _export, addClip, moveClip, trimClip, splitClip, deleteClip, selectClip, setActiveTool, updateClipSettings, setExportStatus, setExportProgress, ...tracked } = state
         return tracked
       },
     },

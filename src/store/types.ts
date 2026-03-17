@@ -47,6 +47,8 @@ export interface StoreActions {
   selectClip: (clipId: string | null) => void
   setActiveTool: (tool: 'select' | 'blade') => void
   updateClipSettings: (clipId: string, patch: Partial<Omit<ClipSettings, 'clipId'>>) => void
+  setExportStatus: (status: ExportState['status']) => void
+  setExportProgress: (progress: number) => void
 }
 
 export interface StoreState extends StoreActions {

@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation** - Project scaffold with Zustand store, Comlink/ffmpeg worker, and @xzdarcy/react-timeline-editor wired up but empty (completed 2026-03-16)
 - [x] **Phase 2: Timeline Core** - Import clips, display on two-track timeline, trim/split/delete/reorder, undo/redo, static thumbnails (completed 2026-03-16)
 - [x] **Phase 3: Clip Settings** - Per-clip filter panel (blur/brightness/contrast/saturation), crop rectangle, and output resize (completed 2026-03-17)
-- [ ] **Phase 4: Export** - ffmpeg.wasm render of timeline to video file with progress display and download
+- [x] **Phase 4: Export** - ffmpeg.wasm render of timeline to video file with progress display and download (completed 2026-03-17)
 
 ## Phase Details
 
@@ -80,11 +80,11 @@ Plans:
   1. User can trigger export from a button and the ffmpeg.wasm worker begins rendering the timeline clips in order
   2. A progress indicator updates in real time (percentage) while rendering is in progress
   3. When rendering completes the user can download the output video file from the browser
-**Plans**: TBD
+**Plans:** 2/2 plans complete
 
 Plans:
-- [ ] 04-01: Export pipeline — build ffmpeg filter graph from store (clips, settings, order), run via Comlink worker, emit progress events
-- [ ] 04-02: Export UI — export button, progress bar wired to worker events, download link on completion
+- [ ] 04-01-PLAN.md — Export pipeline: extract FFmpeg singleton, build filter graph from ClipSettings, store export actions, useExport hook with per-clip encode loop + progress + cancel + download
+- [ ] 04-02-PLAN.md — Export UI: TopBar format dropdown + Export/Cancel/Download button, ExportProgressBar, AppShell wiring, UI lockout, keyboard shortcut blocking, manual verification
 
 ## Progress
 
@@ -96,4 +96,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | 1. Foundation | 4/4 | Complete   | 2026-03-16 |
 | 2. Timeline Core | 5/5 | Complete   | 2026-03-16 |
 | 3. Clip Settings | 2/2 | Complete    | 2026-03-17 |
-| 4. Export | 0/2 | Not started | - |
+| 4. Export | 2/2 | Complete   | 2026-03-17 |

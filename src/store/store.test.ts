@@ -374,3 +374,39 @@ describe('ClipSettings actions', () => {
     expect(mockClip.sourceHeight).toBe(1080)
   })
 })
+
+describe('export actions', () => {
+  it('setExportStatus sets export.status to "rendering"', () => {
+    useStore.getState().setExportStatus('rendering')
+    expect(useStore.getState().export.status).toBe('rendering')
+  })
+
+  it('setExportStatus sets export.status to "done"', () => {
+    useStore.getState().setExportStatus('done')
+    expect(useStore.getState().export.status).toBe('done')
+  })
+
+  it('setExportStatus sets export.status to "error"', () => {
+    useStore.getState().setExportStatus('error')
+    expect(useStore.getState().export.status).toBe('error')
+  })
+
+  it('setExportProgress sets export.progress to given value', () => {
+    useStore.getState().setExportProgress(50)
+    expect(useStore.getState().export.progress).toBe(50)
+  })
+
+  it('setExportStatus is NOT reverted by undo (export excluded from partialize)', () => {
+    useStore.getState().setExportStatus('rendering')
+    useStore.temporal.getState().undo()
+    // undo should not revert export state — it's excluded from tracked history
+    expect(useStore.getState().export.status).toBe('rendering')
+  })
+
+  it('setExportProgress is NOT reverted by undo (export excluded from partialize)', () => {
+    useStore.getState().setExportProgress(75)
+    useStore.temporal.getState().undo()
+    // undo should not revert export progress — it's excluded from tracked history
+    expect(useStore.getState().export.progress).toBe(75)
+  })
+})

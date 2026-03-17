@@ -39,9 +39,9 @@
 
 ### Export
 
-- [ ] **EXPO-01**: User can trigger export to concatenate the timeline into a video via ffmpeg.wasm
-- [ ] **EXPO-02**: User can see export progress (percentage) during rendering
-- [ ] **EXPO-03**: User can download the exported video file after rendering completes
+- [x] **EXPO-01**: User can trigger export to concatenate the timeline into a video via ffmpeg.wasm
+- [x] **EXPO-02**: User can see export progress (percentage) during rendering
+- [x] **EXPO-03**: User can download the exported video file after rendering completes
 
 ## v2 Requirements
 
@@ -101,9 +101,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CLIP-04 | Phase 3 | Complete |
 | CLIP-05 | Phase 3 | Complete |
 | CLIP-06 | Phase 3 | Complete |
-| EXPO-01 | Phase 4 | Pending |
-| EXPO-02 | Phase 4 | Pending |
-| EXPO-03 | Phase 4 | Pending |
+| EXPO-01 | Phase 4 | Complete |
+| EXPO-02 | Phase 4 | Complete |
+| EXPO-03 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 20 total

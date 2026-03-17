@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 03-clip-settings-03-02-PLAN.md
-last_updated: "2026-03-17T09:36:10.357Z"
+stopped_at: Completed 04-export-02-PLAN.md tasks 1-2; awaiting human verification (Task 3 checkpoint)
+last_updated: "2026-03-17T10:34:33.207Z"
 last_activity: "2026-03-17 — Phase 3 Plan 02 complete: ClipSettingsPanel UI verified by user"
 progress:
   total_phases: 4
-  completed_phases: 3
-  total_plans: 11
-  completed_plans: 11
+  completed_phases: 4
+  total_plans: 13
+  completed_plans: 13
   percent: 100
 ---
 
@@ -63,6 +63,8 @@ Progress: [██████████] 100%
 | Phase 03-clip-settings P01 | 3 | 2 tasks | 4 files |
 | Phase 03-clip-settings P02 | 4 | 2 tasks | 5 files |
 | Phase 03-clip-settings P02 | 5 | 3 tasks | 5 files |
+| Phase 04-export P01 | 5 | 2 tasks | 9 files |
+| Phase 04-export P02 | 525523 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -112,6 +114,11 @@ Recent decisions affecting current work:
 - [Phase 03-clip-settings]: ClipSettingsPanel: TypeScript closures require capturing narrowed const vars after early-return guard (clipId, sourceWidth, sourceHeight) since TypeScript cannot narrow union types inside closures
 - [Phase 03-clip-settings]: Aspect ratio in resize always computed from clip.sourceWidth/sourceHeight, not current resize values, for stable lock behavior across multiple edits
 - [Phase 03-clip-settings]: @testing-library/jest-dom wired globally via src/test-setup.ts in vitest.config.ts setupFiles — was installed but not activated
+- [Phase 04-export]: Zundo partialize excludes export actions: undo() does not revert export state, but history entries are still recorded — correct Zundo v2 behavior without custom equality/diff function
+- [Phase 04-export]: triggerDownload exported as standalone function from useExport for unit testability without React hook machinery
+- [Phase 04-export]: GIF export uses mp4 intermediates per clip then single final concat-to-GIF pass; fps=15 scale=480:-2 lanczos, no normalize scale
+- [Phase 04-export]: ExportProgressBar renders null for idle/done states — only visible during rendering and error
+- [Phase 04-export]: UI lockout applied separately to content row and timeline div so TopBar/progress bar remain interactive during export
 
 ### Pending Todos
 
@@ -123,6 +130,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-17T09:32:40.123Z
-Stopped at: Completed 03-clip-settings-03-02-PLAN.md
+Last session: 2026-03-17T10:34:33.203Z
+Stopped at: Completed 04-export-02-PLAN.md tasks 1-2; awaiting human verification (Task 3 checkpoint)
 Resume file: None
