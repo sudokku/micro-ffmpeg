@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Preview & Polish
 status: completed
-stopped_at: Phase 6 context gathered
-last_updated: "2026-03-17T22:59:35.416Z"
+stopped_at: Phase 6 plans ready — 2 plans, 2 waves
+last_updated: "2026-03-17T23:11:47.734Z"
 last_activity: "2026-03-17 — Phase 5 plan 01 complete: extended store schema for v1.1"
 progress:
   total_phases: 7
   completed_phases: 1
-  total_plans: 1
+  total_plans: 3
   completed_plans: 1
   percent: 14
 ---
@@ -78,6 +78,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-17T22:59:35.407Z
-Stopped at: Phase 6 context gathered
-Resume file: .planning/phases/06-filter-graph/06-CONTEXT.md
+Last session: 2026-03-17T23:11:47.728Z
+Stopped at: Phase 6 plans ready — 2 plans, 2 waves
+Resume file: .planning/phases/06-filter-graph/06-01-PLAN.md
