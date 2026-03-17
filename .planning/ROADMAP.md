@@ -55,7 +55,10 @@ Plans:
   3. Exported audio has the correct volume level relative to the 0–200% slider range
   4. Exported video has the correct hue shift and horizontal/vertical flip applied
   5. Unit tests cover all 5 speed presets × audio/video and confirm `atempo` chaining for 0.25× and 4×
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 06-01-PLAN.md — Extend buildVfFilter + add buildAfFilter with TDD coverage
+- [ ] 06-02-PLAN.md — Wire speed-scaled -t and -af into useExport pipeline
 
 ### Phase 7: Waveform Infrastructure
 **Goal**: Users can see audio waveforms rendered on audio clips in the timeline — peaks are extracted once on import and drawn from cached store data
@@ -121,7 +124,7 @@ Plans:
 | 3. Clip Settings | v1.0 | 2/2 | Complete | 2026-03-17 |
 | 4. Export | v1.0 | 2/2 | Complete | 2026-03-17 |
 | 5. Store Foundation | v1.1 | Complete    | 2026-03-17 | 2026-03-17 |
-| 6. Filter Graph | v1.1 | 0/TBD | Not started | - |
+| 6. Filter Graph | v1.1 | 0/2 | Not started | - |
 | 7. Waveform Infrastructure | v1.1 | 0/TBD | Not started | - |
 | 8. Timeline Zoom | v1.1 | 0/TBD | Not started | - |
 | 9. Multi-Clip Selection | v1.1 | 0/TBD | Not started | - |
