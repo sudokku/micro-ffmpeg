@@ -25,7 +25,7 @@ beforeEach(() => {
       },
     },
     clipSettings: {},
-    ui: { selectedClipId: null, activeTool: 'select' },
+    ui: { selectedClipId: null, activeTool: 'select', playheadTime: 0, isPlaying: false, pixelsPerSecond: 100, selectedClipIds: [] },
     export: { status: 'idle', progress: 0 },
   })
 })
@@ -37,7 +37,7 @@ describe('ClipSettingsPanel', () => {
   })
 
   it('renders filter sliders when clip is selected', () => {
-    useStore.setState({ ui: { selectedClipId: 'c1', activeTool: 'select' } })
+    useStore.setState({ ui: { selectedClipId: 'c1', activeTool: 'select', playheadTime: 0, isPlaying: false, pixelsPerSecond: 100, selectedClipIds: [] } })
     render(<ClipSettingsPanel />)
     expect(screen.getByText('Blur')).toBeInTheDocument()
     expect(screen.getByText('Brightness')).toBeInTheDocument()
@@ -46,7 +46,7 @@ describe('ClipSettingsPanel', () => {
   })
 
   it('renders crop section when clip is selected', () => {
-    useStore.setState({ ui: { selectedClipId: 'c1', activeTool: 'select' } })
+    useStore.setState({ ui: { selectedClipId: 'c1', activeTool: 'select', playheadTime: 0, isPlaying: false, pixelsPerSecond: 100, selectedClipIds: [] } })
     render(<ClipSettingsPanel />)
     // Crop section label
     expect(screen.getByText('Crop')).toBeInTheDocument()
@@ -58,7 +58,7 @@ describe('ClipSettingsPanel', () => {
   })
 
   it('renders resize section with lock button when clip is selected', () => {
-    useStore.setState({ ui: { selectedClipId: 'c1', activeTool: 'select' } })
+    useStore.setState({ ui: { selectedClipId: 'c1', activeTool: 'select', playheadTime: 0, isPlaying: false, pixelsPerSecond: 100, selectedClipIds: [] } })
     render(<ClipSettingsPanel />)
     // Resize section label
     expect(screen.getByText('Resize')).toBeInTheDocument()

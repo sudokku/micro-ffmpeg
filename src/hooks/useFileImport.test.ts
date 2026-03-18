@@ -9,7 +9,7 @@ describe('File import logic', () => {
       tracks: { video: { id: 'video', clipIds: [] }, audio: { id: 'audio', clipIds: [] } },
       clips: {},
       clipSettings: {},
-      ui: { selectedClipId: null, activeTool: 'select' },
+      ui: { selectedClipId: null, activeTool: 'select', playheadTime: 0, isPlaying: false, pixelsPerSecond: 100, selectedClipIds: [] },
       export: { status: 'idle', progress: 0 },
     })
     useStore.temporal.getState().clear()

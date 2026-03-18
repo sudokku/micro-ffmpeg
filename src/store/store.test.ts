@@ -107,7 +107,7 @@ describe('Zustand store shape', () => {
 
 describe('Zundo partialize', () => {
   it('Test 8: ui.selectedClipId is NOT reverted by undo (excluded from history)', () => {
-    useStore.setState({ ui: { selectedClipId: 'test-id', activeTool: 'select' } })
+    useStore.setState({ ui: { selectedClipId: 'test-id', activeTool: 'select', playheadTime: 0, isPlaying: false, pixelsPerSecond: 100, selectedClipIds: [] } })
     useStore.temporal.getState().undo()
     expect(useStore.getState().ui.selectedClipId).toBe('test-id')
   })
