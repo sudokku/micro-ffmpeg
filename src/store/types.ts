@@ -1,3 +1,6 @@
+import type { WaveformBar } from '../utils/extractPeaks'
+export type { WaveformBar }
+
 export interface Clip {
   id: string
   trackId: 'video' | 'audio'
@@ -11,7 +14,7 @@ export interface Clip {
   trimEnd: number
   color: string
   thumbnailUrls: string[]
-  waveformPeaks: number[] | null
+  waveformPeaks: WaveformBar[] | null
 }
 
 export interface Track {
@@ -60,6 +63,7 @@ export interface StoreActions {
   updateClipSettings: (clipId: string, patch: Partial<Omit<ClipSettings, 'clipId'>>) => void
   setExportStatus: (status: ExportState['status']) => void
   setExportProgress: (progress: number) => void
+  setWaveformPeaks: (clipId: string, peaks: WaveformBar[]) => void
 }
 
 export interface StoreState extends StoreActions {

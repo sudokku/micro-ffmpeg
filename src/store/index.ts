@@ -181,11 +181,21 @@ export const useStore = create<StoreState>()(
       setExportProgress: (progress) => {
         set((state) => ({ export: { ...state.export, progress } }))
       },
+
+      setWaveformPeaks: (clipId, peaks) => {
+        set((state) => {
+          const existing = state.clips[clipId]
+          if (!existing) return state
+          return {
+            clips: { ...state.clips, [clipId]: { ...existing, waveformPeaks: peaks } },
+          }
+        })
+      },
     }),
     {
       partialize: (state): TrackedState => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { ui, export: _export, addClip, moveClip, trimClip, splitClip, deleteClip, selectClip, setActiveTool, updateClipSettings, setExportStatus, setExportProgress, ...tracked } = state
+        const { ui, export: _export, addClip, moveClip, trimClip, splitClip, deleteClip, selectClip, setActiveTool, updateClipSettings, setExportStatus, setExportProgress, setWaveformPeaks, ...tracked } = state
         return tracked
       },
     },

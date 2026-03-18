@@ -30,7 +30,7 @@
 
 ### Waveform (WAVE)
 
-- [ ] **WAVE-01**: User can see audio waveforms rendered on audio clips in the timeline
+- [x] **WAVE-01**: User can see audio waveforms rendered on audio clips in the timeline
 
 ### Timeline Zoom (ZOOM)
 
@@ -100,7 +100,7 @@
 | PREV-02 | Phase 10 | Pending |
 | PREV-03 | Phase 10 | Pending |
 | PREV-04 | Phase 10 | Pending |
-| WAVE-01 | Phase 7 | Pending |
+| WAVE-01 | Phase 7 | Complete |
 | ZOOM-01 | Phase 8 | Pending |
 | ZOOM-02 | Phase 8 | Pending |
 | ZOOM-03 | Phase 8 | Pending |

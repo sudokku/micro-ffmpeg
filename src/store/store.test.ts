@@ -473,6 +473,48 @@ describe('ClipSettings actions', () => {
   })
 })
 
+describe('setWaveformPeaks', () => {
+  const mockFile = new File([], 'audio.mp3')
+  const mockBars = [
+    { min: -0.5, max: 0.5, rms: 0.35 },
+    { min: -1.0, max: 1.0, rms: 0.7 },
+    { min: -0.3, max: 0.3, rms: 0.21 },
+  ]
+
+  it('setWaveformPeaks updates clip.waveformPeaks to provided WaveformBar array', () => {
+    useStore.getState().addClip(mockFile, 'audio', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().setWaveformPeaks(clipId, mockBars)
+    expect(useStore.getState().clips[clipId].waveformPeaks).toEqual(mockBars)
+  })
+
+  it('setWaveformPeaks on non-existent clipId is a no-op', () => {
+    useStore.getState().setWaveformPeaks('ghost', mockBars)
+    expect(useStore.getState().clips).toEqual({})
+  })
+
+  it('waveformPeaks IS reverted by undo (tracked state)', () => {
+    useStore.getState().addClip(mockFile, 'audio', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.temporal.getState().clear()
+    useStore.getState().setWaveformPeaks(clipId, mockBars.slice(0, 2))
+    expect(useStore.getState().clips[clipId].waveformPeaks).toEqual(mockBars.slice(0, 2))
+    useStore.temporal.getState().undo()
+    expect(useStore.getState().clips[clipId].waveformPeaks).toBeNull()
+  })
+
+  it('setWaveformPeaks action itself is NOT reverted by undo (excluded from partialize)', () => {
+    useStore.getState().addClip(mockFile, 'audio', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().setWaveformPeaks(clipId, mockBars.slice(0, 2))
+    useStore.temporal.getState().undo()
+    // The action function itself must still be callable after undo
+    expect(typeof useStore.getState().setWaveformPeaks).toBe('function')
+    useStore.getState().setWaveformPeaks(clipId, mockBars)
+    expect(useStore.getState().clips[clipId].waveformPeaks).toEqual(mockBars)
+  })
+})
+
 describe('export actions', () => {
   it('setExportStatus sets export.status to "rendering"', () => {
     useStore.getState().setExportStatus('rendering')

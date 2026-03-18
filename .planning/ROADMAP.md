@@ -23,7 +23,7 @@
 
 - [x] **Phase 5: Store Foundation** — Extend store schema for all v1.1 features; zero UI changes
 - [x] **Phase 6: Filter Graph** — Add speed/rotation/volume/hue/flip to the ffmpeg filter pipeline (completed 2026-03-17)
-- [ ] **Phase 7: Waveform Infrastructure** — Extract and render audio waveforms on timeline clips
+- [x] **Phase 7: Waveform Infrastructure** — Extract and render audio waveforms on timeline clips (completed 2026-03-18)
 - [ ] **Phase 8: Timeline Zoom** — Wire +/- buttons and modifier+scroll zoom to the timeline
 - [ ] **Phase 9: Multi-Clip Selection** — Cmd/Ctrl+click multi-select with bulk delete, settings, and drag
 - [ ] **Phase 10: Preview Panel** — Live canvas preview with play/pause, timecode, and playhead sync
@@ -68,7 +68,10 @@ Plans:
   1. After importing an audio file, waveform peaks appear on the clip in the timeline within a few seconds
   2. Waveform peaks persist through undo/redo and across clip operations (trim, split, reorder)
   3. Video clips are unaffected (no waveform canvas branch runs for video clips)
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 07-01-PLAN.md — Store action (setWaveformPeaks) + extractPeaks utility with tests
+- [ ] 07-02-PLAN.md — useWaveformExtractor hook + WaveformCanvas renderer + visual verification
 
 ### Phase 8: Timeline Zoom
 **Goal**: Users can control timeline zoom via keyboard-accessible buttons and modifier+scroll — precision trimming is possible on long clips
@@ -79,7 +82,10 @@ Plans:
   2. Holding Cmd/Ctrl and scrolling over the timeline zooms in/out continuously
   3. A reset-to-fit button (or action) restores zoom so the full timeline is visible on screen
   4. Zoom is clamped to safe bounds — the timeline never collapses or overflows its container
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 07-01-PLAN.md — Store action (setWaveformPeaks) + extractPeaks utility with tests
+- [ ] 07-02-PLAN.md — useWaveformExtractor hook + WaveformCanvas renderer + visual verification
 
 ### Phase 9: Multi-Clip Selection
 **Goal**: Users can select multiple clips at once and operate on all of them — delete, apply settings, and move — as a single undoable action
@@ -90,7 +96,10 @@ Plans:
   2. Pressing Backspace/Delete with multiple clips selected removes all of them in a single undo step
   3. Changing a setting in ClipSettingsPanel while multiple clips are selected applies the change to all selected clips
   4. Dragging one selected clip moves all selected clips together by the same delta
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 07-01-PLAN.md — Store action (setWaveformPeaks) + extractPeaks utility with tests
+- [ ] 07-02-PLAN.md — useWaveformExtractor hook + WaveformCanvas renderer + visual verification
 
 ### Phase 10: Preview Panel
 **Goal**: Users can see the current timeline frame rendered live in the preview panel and play back the timeline with audio
@@ -101,7 +110,10 @@ Plans:
   2. Clicking play (or pressing Space) starts playback; the playhead advances in sync; audio plays from the correct position
   3. The preview panel displays a timecode (HH:MM:SS) that updates during playback and scrubbing
   4. Per-clip filters (blur, brightness, contrast, saturation, crop) are visually reflected in the preview canvas
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 07-01-PLAN.md — Store action (setWaveformPeaks) + extractPeaks utility with tests
+- [ ] 07-02-PLAN.md — useWaveformExtractor hook + WaveformCanvas renderer + visual verification
 
 ### Phase 11: Clip Settings UI + Polish
 **Goal**: All per-clip settings from Phase 6 have UI controls in ClipSettingsPanel and bulk-apply to multi-selected clips; the editor UI is polished to an iMovie-style three-panel layout
@@ -111,7 +123,10 @@ Plans:
   1. ClipSettingsPanel shows speed preset buttons (0.25x/0.5x/1x/2x/4x), rotation picker (0/90/180/270), volume slider (0-200%), hue slider, and flip H/V toggles for the selected clip
   2. All clip settings controls apply to all selected clips when multiple are selected
   3. The editor presents an iMovie-style three-panel layout: preview (center-top), settings sidebar (right), timeline (bottom) with consistent spacing and button styling
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 07-01-PLAN.md — Store action (setWaveformPeaks) + extractPeaks utility with tests
+- [ ] 07-02-PLAN.md — useWaveformExtractor hook + WaveformCanvas renderer + visual verification
 
 ## Progress
 
@@ -125,7 +140,7 @@ Plans:
 | 4. Export | v1.0 | 2/2 | Complete | 2026-03-17 |
 | 5. Store Foundation | v1.1 | Complete    | 2026-03-17 | 2026-03-17 |
 | 6. Filter Graph | 2/2 | Complete   | 2026-03-17 | - |
-| 7. Waveform Infrastructure | v1.1 | 0/TBD | Not started | - |
+| 7. Waveform Infrastructure | 2/2 | Complete   | 2026-03-18 | - |
 | 8. Timeline Zoom | v1.1 | 0/TBD | Not started | - |
 | 9. Multi-Clip Selection | v1.1 | 0/TBD | Not started | - |
 | 10. Preview Panel | v1.1 | 0/TBD | Not started | - |

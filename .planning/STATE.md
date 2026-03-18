@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Preview & Polish
 status: completed
-stopped_at: Phase 7 context gathered
-last_updated: "2026-03-17T23:47:41.727Z"
-last_activity: "2026-03-17 — Phase 5 plan 01 complete: extended store schema for v1.1"
+stopped_at: Completed 07-02-PLAN.md — waveform pipeline fully delivered and visually verified
+last_updated: "2026-03-18T02:06:11.073Z"
+last_activity: "2026-03-18 — Phase 7 plan 02 complete: waveform hook and Audacity-style canvas renderer"
 progress:
   total_phases: 7
-  completed_phases: 2
-  total_plans: 3
-  completed_plans: 3
-  percent: 14
+  completed_phases: 3
+  total_plans: 5
+  completed_plans: 5
+  percent: 57
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-17)
 
 **Core value:** Timeline + store work perfectly: clip edits reflect instantly, undo/redo is flawless, export faithfully renders what the timeline shows
-**Current focus:** Milestone v1.1 — Phase 5: Store Foundation
+**Current focus:** Milestone v1.1 — Phase 7: Waveform Infrastructure COMPLETE
 
 ## Current Position
 
-Phase: 5 of 11 overall (1 of 7 in v1.1) — COMPLETE
-Plan: 01 of 01 — complete
-Status: Phase 5 done, ready for Phase 6
-Last activity: 2026-03-17 — Phase 5 plan 01 complete: extended store schema for v1.1
+Phase: 7 of 11 overall (3 of 7 in v1.1) — COMPLETE
+Plan: 02 of 02 — complete
+Status: Phase 7 done, ready for Phase 8
+Last activity: 2026-03-18 — Phase 7 plan 02 complete: waveform hook and Audacity-style canvas renderer
 
-Progress: [█░░░░░░░░░] 14% (v1.1)
+Progress: [████░░░░░░] 57% (v1.1)
 
 ## Performance Metrics
 
@@ -52,6 +52,8 @@ Progress: [█░░░░░░░░░] 14% (v1.1)
 *Updated after each plan completion*
 | Phase 06-filter-graph P01 | 8 | 1 tasks | 2 files |
 | Phase 06-filter-graph P02 | 8 | 1 tasks | 2 files |
+| Phase 07-waveform-infrastructure P01 | 10 | 2 tasks | 5 files |
+| Phase 07-waveform-infrastructure P02 | 8 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -72,6 +74,13 @@ Recent decisions affecting current work:
 - [Phase 06-filter-graph]: buildAfFilter takes (speed, volume) primitives not full ClipSettings — cleaner API, easier to test
 - [Phase 06-filter-graph]: sourceDuration = duration * speed is correct -t value for speed-altered clips: at 2x speed FFmpeg reads 2x more source frames
 - [Phase 06-filter-graph]: -af omitted entirely when buildAfFilter returns empty string (speed=1, volume=1.0) to avoid passthrough filter overhead
+- [Phase 07-waveform-infrastructure]: setWaveformPeaks stores WaveformBar[] on Clip directly so Zundo undo/redo automatically reverts waveform data with clip edits
+- [Phase 07-waveform-infrastructure]: WaveformBar { min, max, rms } per bar (not number[]) — enables dual-layer Audacity-style rendering: faint min/max envelope + bright RMS fill
+- [Phase 07-waveform-infrastructure]: BARS_PER_SECOND=10 (duration-proportional) replaces fixed 200 — short and long clips get consistent visual density
+- [Phase 07-waveform-infrastructure]: Log-scale amplitude with −60 dB floor (ampToHeight) — quiet signals stay visible, loud signals don't blow out
+- [Phase 07-waveform-infrastructure]: inFlightRef.delete in finally block allows undo to re-trigger extraction correctly
+- [Phase 07-waveform-infrastructure]: WaveformCanvas co-located in ClipAction.tsx — internal component, no separate file needed
+- [Phase 07-waveform-infrastructure]: ResizeObserver drives WaveformCanvas redraws so bars stay sharp when clip is resized on timeline
 
 ### Pending Todos
 
@@ -83,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-17T23:47:41.725Z
-Stopped at: Phase 7 context gathered
-Resume file: .planning/phases/07-waveform-infrastructure/07-CONTEXT.md
+Last session: 2026-03-18T00:48:00.000Z
+Stopped at: Completed 07-02-PLAN.md — waveform pipeline fully delivered and visually verified
+Resume file: None

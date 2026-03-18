@@ -9,6 +9,7 @@ import { ExportProgressBar } from './ExportProgressBar'
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts'
 import { useFileImport } from '../hooks/useFileImport'
 import { useThumbnailExtractor } from '../hooks/useThumbnailExtractor'
+import { useWaveformExtractor } from '../hooks/useWaveformExtractor'
 import { useExport } from '../hooks/useExport'
 import { useStore } from '../store'
 import type { ExportFormat } from '../utils/buildFilterGraph'
@@ -17,6 +18,7 @@ export function AppShell() {
   useKeyboardShortcuts()
   const { showOverlay, fileInputRef, openFilePicker, handleFileInputChange } = useFileImport()
   useThumbnailExtractor()
+  useWaveformExtractor()
   const hasClips = useStore((s) => Object.keys(s.clips).length > 0)
   const { runExport, cancelExport, performDownload } = useExport()
   const [exportFormat, setExportFormat] = useState<ExportFormat>('mp4')

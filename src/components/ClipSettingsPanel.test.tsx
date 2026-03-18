@@ -21,6 +21,7 @@ beforeEach(() => {
         trimEnd: 0,
         color: '#3b82f6',
         thumbnailUrls: [],
+        waveformPeaks: null,
       },
     },
     clipSettings: {},
