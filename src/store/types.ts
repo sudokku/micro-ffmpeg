@@ -64,6 +64,7 @@ export interface StoreActions {
   setExportStatus: (status: ExportState['status']) => void
   setExportProgress: (progress: number) => void
   setWaveformPeaks: (clipId: string, peaks: WaveformBar[]) => void
+  setPixelsPerSecond: (pps: number) => void
 }
 
 export interface StoreState extends StoreActions {

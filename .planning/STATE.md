@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Preview & Polish
 status: completed
-stopped_at: Phase 8 context gathered
-last_updated: "2026-03-18T03:00:03.205Z"
+stopped_at: "Phase 08 plan 02 complete: zoom controls in TimelinePanel"
+last_updated: "2026-03-18T03:34:22.119Z"
 last_activity: "2026-03-18 — Phase 7 plan 02 complete: waveform hook and Audacity-style canvas renderer"
 progress:
   total_phases: 7
-  completed_phases: 3
-  total_plans: 5
-  completed_plans: 5
+  completed_phases: 4
+  total_plans: 7
+  completed_plans: 7
   percent: 57
 ---
 
@@ -54,6 +54,8 @@ Progress: [████░░░░░░] 57% (v1.1)
 | Phase 06-filter-graph P02 | 8 | 1 tasks | 2 files |
 | Phase 07-waveform-infrastructure P01 | 10 | 2 tasks | 5 files |
 | Phase 07-waveform-infrastructure P02 | 8 | 2 tasks | 5 files |
+| Phase 08-timeline-zoom P01 | 5 | 1 tasks | 3 files |
+| Phase 08-timeline-zoom P02 | 8 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -81,6 +83,10 @@ Recent decisions affecting current work:
 - [Phase 07-waveform-infrastructure]: inFlightRef.delete in finally block allows undo to re-trigger extraction correctly
 - [Phase 07-waveform-infrastructure]: WaveformCanvas co-located in ClipAction.tsx — internal component, no separate file needed
 - [Phase 07-waveform-infrastructure]: ResizeObserver drives WaveformCanvas redraws so bars stay sharp when clip is resized on timeline
+- [Phase 08-timeline-zoom]: setPixelsPerSecond clamps to [50, 400]: ui slice excluded from Zundo partialize so zoom is never reverted by undo
+- [Phase 08-timeline-zoom]: scale={1} + scaleWidth={pixelsPerSecond} makes scaleWidth directly equal pixels-per-second
+- [Phase 08-timeline-zoom]: START_LEFT=20 matches DEFAULT_START_LEFT in @xzdarcy library for correct cursor-time calculation
+- [Phase 08-timeline-zoom]: onWheel on outer container div for reliable modifier+scroll interception with e.preventDefault()
 
 ### Pending Todos
 
@@ -92,6 +98,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-18T03:00:03.201Z
-Stopped at: Phase 8 context gathered
-Resume file: .planning/phases/08-timeline-zoom/08-CONTEXT.md
+Last session: 2026-03-18T03:32:09.088Z
+Stopped at: Phase 08 plan 02 complete: zoom controls in TimelinePanel
+Resume file: None

@@ -24,7 +24,7 @@
 - [x] **Phase 5: Store Foundation** — Extend store schema for all v1.1 features; zero UI changes
 - [x] **Phase 6: Filter Graph** — Add speed/rotation/volume/hue/flip to the ffmpeg filter pipeline (completed 2026-03-17)
 - [x] **Phase 7: Waveform Infrastructure** — Extract and render audio waveforms on timeline clips (completed 2026-03-18)
-- [ ] **Phase 8: Timeline Zoom** — Wire +/- buttons and modifier+scroll zoom to the timeline
+- [x] **Phase 8: Timeline Zoom** — Wire +/- buttons and modifier+scroll zoom to the timeline (completed 2026-03-18)
 - [ ] **Phase 9: Multi-Clip Selection** — Cmd/Ctrl+click multi-select with bulk delete, settings, and drag
 - [ ] **Phase 10: Preview Panel** — Live canvas preview with play/pause, timecode, and playhead sync
 - [ ] **Phase 11: Clip Settings UI + Polish** — Speed/rotation/volume/hue/flip controls and iMovie-style UI
@@ -84,8 +84,9 @@ Plans:
   4. Zoom is clamped to safe bounds — the timeline never collapses or overflows its container
 **Plans**: 2 plans
 Plans:
-- [ ] 07-01-PLAN.md — Store action (setWaveformPeaks) + extractPeaks utility with tests
-- [ ] 07-02-PLAN.md — useWaveformExtractor hook + WaveformCanvas renderer + visual verification
+- [ ] 08-01-PLAN.md — Add setPixelsPerSecond store action with clamping and tests
+- [ ] 08-02-PLAN.md — Wire zoom buttons, modifier+scroll, and fit-to-screen into TimelinePanel
+
 
 ### Phase 9: Multi-Clip Selection
 **Goal**: Users can select multiple clips at once and operate on all of them — delete, apply settings, and move — as a single undoable action
@@ -141,7 +142,7 @@ Plans:
 | 5. Store Foundation | v1.1 | Complete    | 2026-03-17 | 2026-03-17 |
 | 6. Filter Graph | 2/2 | Complete   | 2026-03-17 | - |
 | 7. Waveform Infrastructure | 2/2 | Complete   | 2026-03-18 | - |
-| 8. Timeline Zoom | v1.1 | 0/TBD | Not started | - |
+| 8. Timeline Zoom | 2/2 | Complete   | 2026-03-18 | - |
 | 9. Multi-Clip Selection | v1.1 | 0/TBD | Not started | - |
 | 10. Preview Panel | v1.1 | 0/TBD | Not started | - |
 | 11. Clip Settings UI + Polish | v1.1 | 0/TBD | Not started | - |

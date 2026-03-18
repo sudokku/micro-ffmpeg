@@ -515,6 +515,39 @@ describe('setWaveformPeaks', () => {
   })
 })
 
+describe('setPixelsPerSecond', () => {
+  it('setPixelsPerSecond(125) sets ui.pixelsPerSecond to 125', () => {
+    useStore.getState().setPixelsPerSecond(125)
+    expect(useStore.getState().ui.pixelsPerSecond).toBe(125)
+  })
+
+  it('setPixelsPerSecond(10) clamps to 50', () => {
+    useStore.getState().setPixelsPerSecond(10)
+    expect(useStore.getState().ui.pixelsPerSecond).toBe(50)
+  })
+
+  it('setPixelsPerSecond(999) clamps to 400', () => {
+    useStore.getState().setPixelsPerSecond(999)
+    expect(useStore.getState().ui.pixelsPerSecond).toBe(400)
+  })
+
+  it('setPixelsPerSecond(50) stores exactly 50 (boundary)', () => {
+    useStore.getState().setPixelsPerSecond(50)
+    expect(useStore.getState().ui.pixelsPerSecond).toBe(50)
+  })
+
+  it('setPixelsPerSecond(400) stores exactly 400 (boundary)', () => {
+    useStore.getState().setPixelsPerSecond(400)
+    expect(useStore.getState().ui.pixelsPerSecond).toBe(400)
+  })
+
+  it('setPixelsPerSecond is NOT reverted by undo (ui excluded)', () => {
+    useStore.getState().setPixelsPerSecond(200)
+    useStore.temporal.getState().undo()
+    expect(useStore.getState().ui.pixelsPerSecond).toBe(200)
+  })
+})
+
 describe('export actions', () => {
   it('setExportStatus sets export.status to "rendering"', () => {
     useStore.getState().setExportStatus('rendering')

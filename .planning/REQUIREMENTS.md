@@ -34,9 +34,9 @@
 
 ### Timeline Zoom (ZOOM)
 
-- [ ] **ZOOM-01**: User can zoom the timeline in/out via +/- buttons
-- [ ] **ZOOM-02**: User can zoom the timeline via modifier+scroll over the timeline
-- [ ] **ZOOM-03**: User can reset zoom to fit the full timeline on screen
+- [x] **ZOOM-01**: User can zoom the timeline in/out via +/- buttons
+- [x] **ZOOM-02**: User can zoom the timeline via modifier+scroll over the timeline
+- [x] **ZOOM-03**: User can reset zoom to fit the full timeline on screen
 
 ### Multi-Clip Selection (SEL)
 
@@ -101,9 +101,9 @@
 | PREV-03 | Phase 10 | Pending |
 | PREV-04 | Phase 10 | Pending |
 | WAVE-01 | Phase 7 | Complete |
-| ZOOM-01 | Phase 8 | Pending |
-| ZOOM-02 | Phase 8 | Pending |
-| ZOOM-03 | Phase 8 | Pending |
+| ZOOM-01 | Phase 8 | Complete |
+| ZOOM-02 | Phase 8 | Complete |
+| ZOOM-03 | Phase 8 | Complete |
 | SEL-01 | Phase 9 | Pending |
 | SEL-02 | Phase 9 | Pending |
 | SEL-03 | Phase 9 | Pending |

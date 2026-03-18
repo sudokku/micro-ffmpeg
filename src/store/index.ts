@@ -191,11 +191,17 @@ export const useStore = create<StoreState>()(
           }
         })
       },
+
+      setPixelsPerSecond: (pps) => {
+        const state = get()
+        const clamped = Math.min(400, Math.max(50, pps))
+        set({ ui: { ...state.ui, pixelsPerSecond: clamped } })
+      },
     }),
     {
       partialize: (state): TrackedState => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { ui, export: _export, addClip, moveClip, trimClip, splitClip, deleteClip, selectClip, setActiveTool, updateClipSettings, setExportStatus, setExportProgress, setWaveformPeaks, ...tracked } = state
+        const { ui, export: _export, addClip, moveClip, trimClip, splitClip, deleteClip, selectClip, setActiveTool, updateClipSettings, setExportStatus, setExportProgress, setWaveformPeaks, setPixelsPerSecond, ...tracked } = state
         return tracked
       },
     },

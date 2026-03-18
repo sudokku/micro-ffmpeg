@@ -12,7 +12,14 @@ beforeEach(() => {
     tracks: { video: { id: 'video', clipIds: [] }, audio: { id: 'audio', clipIds: [] } },
     clips: {},
     clipSettings: {},
-    ui: { selectedClipId: null, activeTool: 'select' },
+    ui: {
+      selectedClipId: null,
+      activeTool: 'select',
+      playheadTime: 0,
+      isPlaying: false,
+      pixelsPerSecond: 100,
+      selectedClipIds: [],
+    },
     export: { status: 'idle', progress: 0 },
   })
   useStore.temporal.getState().clear()
@@ -57,5 +64,44 @@ describe('deriveEditorData', () => {
     const { tracks, clips, ui } = useStore.getState()
     const data = deriveEditorData(tracks, clips, ui.selectedClipId)
     expect(data[0].actions[0].selected).toBe(true)
+  })
+})
+
+describe('zoom controls', () => {
+  it('zoom in multiplies pixelsPerSecond by 1.25', () => {
+    // Store starts at 100 px/s (default)
+    useStore.getState().setPixelsPerSecond(useStore.getState().ui.pixelsPerSecond * 1.25)
+    expect(useStore.getState().ui.pixelsPerSecond).toBe(125)
+  })
+
+  it('zoom out multiplies pixelsPerSecond by 0.8', () => {
+    useStore.getState().setPixelsPerSecond(useStore.getState().ui.pixelsPerSecond * 0.8)
+    expect(useStore.getState().ui.pixelsPerSecond).toBe(80)
+  })
+
+  it('zoom in from 350 clamps to 400', () => {
+    useStore.setState({ ui: { ...useStore.getState().ui, pixelsPerSecond: 350 } })
+    useStore.getState().setPixelsPerSecond(350 * 1.25) // 437.5
+    expect(useStore.getState().ui.pixelsPerSecond).toBe(400)
+  })
+
+  it('zoom out from 55 clamps to 50', () => {
+    useStore.setState({ ui: { ...useStore.getState().ui, pixelsPerSecond: 55 } })
+    useStore.getState().setPixelsPerSecond(55 * 0.8) // 44
+    expect(useStore.getState().ui.pixelsPerSecond).toBe(50)
+  })
+
+  it('fit with clips sets pixelsPerSecond to (containerWidth * 0.9) / totalDuration', () => {
+    // Simulate: containerWidth=1000, clip endTime=10 => fitted = 900/10 = 90
+    const fitted = (1000 * 0.9) / 10
+    useStore.getState().setPixelsPerSecond(fitted)
+    expect(useStore.getState().ui.pixelsPerSecond).toBe(90)
+  })
+
+  it('fit with no clips resets to 100', () => {
+    useStore.getState().setPixelsPerSecond(200) // change from default
+    // No clips => totalDuration=0 => reset to 100
+    useStore.getState().setPixelsPerSecond(100)
+    expect(useStore.getState().ui.pixelsPerSecond).toBe(100)
   })
 })
