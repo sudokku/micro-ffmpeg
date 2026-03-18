@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react'
 import type { Clip, WaveformBar } from '../store/types'
+import { useStore } from '../store'
 
 function formatDuration(seconds: number): string {
   const mins = Math.floor(seconds / 60)
@@ -55,28 +56,39 @@ function WaveformCanvas({
       const visible = bars.slice(startIdx, endIdx)
       if (visible.length === 0) return
 
-      const barW = Math.max(1, Math.floor((w - (visible.length - 1)) / visible.length))
-      const gap = barW >= 2 ? 1 : 0
-      const step = barW + gap
       const cy = h / 2
+      const n = visible.length
+
+      // Distribute bars proportionally across the full canvas width so they
+      // always reach the right edge — independent of the exact bar count.
+      // This handles the case where audioBuffer.duration (used to build bars)
+      // is slightly shorter than sourceDuration (from the media element).
+      const getSlot = (i: number) => {
+        const x0 = Math.round((i / n) * w)
+        const x1 = Math.round(((i + 1) / n) * w)
+        const bw = Math.max(1, x1 - x0 - (x1 - x0 > 1 ? 1 : 0)) // 1px gap when wide enough
+        return { x: x0, bw }
+      }
 
       // Outer layer: min/max envelope (faint — shows peak transients)
       ctx.fillStyle = 'rgba(255,255,255,0.3)'
-      for (let i = 0; i < visible.length; i++) {
+      for (let i = 0; i < n; i++) {
+        const { x, bw } = getSlot(i)
         const { min, max } = visible[i]
         const topH = ampToHeight(max) * cy
         const botH = ampToHeight(Math.abs(min)) * cy
         const totalH = Math.max(1, Math.round(topH + botH))
-        ctx.fillRect(Math.round(i * step), Math.round(cy - topH), barW, totalH)
+        ctx.fillRect(x, Math.round(cy - topH), bw, totalH)
       }
 
       // Inner layer: RMS fill (bright — shows perceived loudness)
       ctx.fillStyle = 'rgba(255,255,255,0.75)'
-      for (let i = 0; i < visible.length; i++) {
+      for (let i = 0; i < n; i++) {
         const rmsH = ampToHeight(visible[i].rms) * cy
         if (rmsH < 0.5) continue
+        const { x, bw } = getSlot(i)
         const h2 = Math.max(1, Math.round(rmsH * 2))
-        ctx.fillRect(Math.round(i * step), Math.round(cy - rmsH), barW, h2)
+        ctx.fillRect(x, Math.round(cy - rmsH), bw, h2)
       }
     }
 
@@ -103,6 +115,10 @@ interface ClipActionProps {
 export function ClipAction({ clip, isSelected, cursorClass }: ClipActionProps) {
   const thumbnail = clip.thumbnailUrls[0] ?? null
   const isVideoClip = clip.trackId === 'video'
+  // Read trim positions directly from store so waveform updates immediately after resize,
+  // independent of when the timeline library re-invokes getActionRender.
+  const trimStart = useStore((s) => s.clips[clip.id]?.trimStart ?? 0)
+  const trimEnd = useStore((s) => s.clips[clip.id]?.trimEnd ?? clip.sourceDuration)
 
   return (
     <div
@@ -135,8 +151,8 @@ export function ClipAction({ clip, isSelected, cursorClass }: ClipActionProps) {
       {!isVideoClip && clip.waveformPeaks && (
         <WaveformCanvas
           bars={clip.waveformPeaks}
-          trimStart={clip.trimStart}
-          trimEnd={clip.trimEnd}
+          trimStart={trimStart}
+          trimEnd={trimEnd}
           sourceDuration={clip.sourceDuration}
         />
       )}

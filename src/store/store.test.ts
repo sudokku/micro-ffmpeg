@@ -204,13 +204,15 @@ describe('Store actions', () => {
     expect(clip.endTime).toBe(15)
   })
 
-  it('trimClip updates clip.startTime and clip.endTime', () => {
+  it('trimClip updates startTime, endTime, trimStart, and trimEnd', () => {
     useStore.getState().addClip(mockFile, 'video', 10)
     const clipId = Object.keys(useStore.getState().clips)[0]
     useStore.getState().trimClip(clipId, 2, 8)
     const clip = useStore.getState().clips[clipId]
     expect(clip.startTime).toBe(2)
     expect(clip.endTime).toBe(8)
+    expect(clip.trimStart).toBe(2)
+    expect(clip.trimEnd).toBe(8)
   })
 
   it('splitClip creates two clips: left and right covering the original range', () => {
@@ -521,9 +523,9 @@ describe('setPixelsPerSecond', () => {
     expect(useStore.getState().ui.pixelsPerSecond).toBe(125)
   })
 
-  it('setPixelsPerSecond(10) clamps to 50', () => {
-    useStore.getState().setPixelsPerSecond(10)
-    expect(useStore.getState().ui.pixelsPerSecond).toBe(50)
+  it('setPixelsPerSecond(3) clamps to 5', () => {
+    useStore.getState().setPixelsPerSecond(3)
+    expect(useStore.getState().ui.pixelsPerSecond).toBe(5)
   })
 
   it('setPixelsPerSecond(999) clamps to 400', () => {

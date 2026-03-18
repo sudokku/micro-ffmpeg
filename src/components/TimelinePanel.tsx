@@ -11,10 +11,18 @@ const effects: Record<string, TimelineEffect> = { default: { id: 'default' } }
 
 const START_LEFT = 20
 const ZOOM_FACTOR = 1.25
-const MIN_PPS = 50
+const MIN_PPS = 5
 const MAX_PPS = 400
 const DEFAULT_PPS = 100
+const MIN_LABEL_PX = 80
 const BUTTON_CLASS = 'text-sm font-medium px-3 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-white transition-colors'
+
+const TIME_INTERVALS = [1, 2, 5, 10, 15, 30, 60, 120, 300, 600]
+
+function niceTimeInterval(pps: number): number {
+  const minSeconds = MIN_LABEL_PX / pps
+  return TIME_INTERVALS.find((n) => n >= minSeconds) ?? 600
+}
 
 export function TimelinePanel() {
   const tracks = useStore((s) => s.tracks)
@@ -146,8 +154,8 @@ export function TimelinePanel() {
           effects={effects}
           autoScroll={true}
           dragLine={true}
-          scale={1}
-          scaleWidth={pixelsPerSecond}
+          scale={niceTimeInterval(pixelsPerSecond)}
+          scaleWidth={niceTimeInterval(pixelsPerSecond) * pixelsPerSecond}
           onScroll={({ scrollLeft }) => { scrollLeftRef.current = scrollLeft }}
           onActionMoveEnd={handleActionMoveEnd}
           onActionResizeEnd={handleActionResizeEnd}

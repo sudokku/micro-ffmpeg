@@ -85,10 +85,10 @@ describe('zoom controls', () => {
     expect(useStore.getState().ui.pixelsPerSecond).toBe(400)
   })
 
-  it('zoom out from 55 clamps to 50', () => {
-    useStore.setState({ ui: { ...useStore.getState().ui, pixelsPerSecond: 55 } })
-    useStore.getState().setPixelsPerSecond(55 * 0.8) // 44
-    expect(useStore.getState().ui.pixelsPerSecond).toBe(50)
+  it('zoom out from 7 clamps to 5', () => {
+    useStore.setState({ ui: { ...useStore.getState().ui, pixelsPerSecond: 7 } })
+    useStore.getState().setPixelsPerSecond(3)
+    expect(useStore.getState().ui.pixelsPerSecond).toBe(5)
   })
 
   it('fit with clips sets pixelsPerSecond to (containerWidth * 0.9) / totalDuration', () => {

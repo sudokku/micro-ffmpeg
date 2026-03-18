@@ -76,12 +76,24 @@ export const useStore = create<StoreState>()(
       },
 
       trimClip: (clipId, newStart, newEnd) => {
-        set((state) => ({
-          clips: {
-            ...state.clips,
-            [clipId]: { ...state.clips[clipId], startTime: newStart, endTime: newEnd },
-          },
-        }))
+        set((state) => {
+          const clip = state.clips[clipId]
+          if (!clip) return state
+          const startDelta = newStart - clip.startTime
+          const endDelta = newEnd - clip.endTime
+          return {
+            clips: {
+              ...state.clips,
+              [clipId]: {
+                ...clip,
+                startTime: newStart,
+                endTime: newEnd,
+                trimStart: clip.trimStart + startDelta,
+                trimEnd: clip.trimEnd + endDelta,
+              },
+            },
+          }
+        })
       },
 
       splitClip: (clipId, splitTime) => {
@@ -194,7 +206,7 @@ export const useStore = create<StoreState>()(
 
       setPixelsPerSecond: (pps) => {
         const state = get()
-        const clamped = Math.min(400, Math.max(50, pps))
+        const clamped = Math.min(400, Math.max(5, pps))
         set({ ui: { ...state.ui, pixelsPerSecond: clamped } })
       },
     }),
