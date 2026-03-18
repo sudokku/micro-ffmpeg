@@ -109,12 +109,13 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. The central panel shows the current frame matching the playhead position — scrubbing the playhead updates the canvas immediately
   2. Clicking play (or pressing Space) starts playback; the playhead advances in sync; audio plays from the correct position
-  3. The preview panel displays a timecode (HH:MM:SS) that updates during playback and scrubbing
+  3. The preview panel displays a timecode (MM:SS) that updates during playback and scrubbing
   4. Per-clip filters (blur, brightness, contrast, saturation, crop) are visually reflected in the preview canvas
-**Plans**: 2 plans
+**Plans**: 3 plans
 Plans:
-- [ ] 07-01-PLAN.md — Store action (setWaveformPeaks) + extractPeaks utility with tests
-- [ ] 07-02-PLAN.md — useWaveformExtractor hook + WaveformCanvas renderer + visual verification
+- [ ] 10-01-PLAN.md — TDD utility functions: buildCanvasFilter + previewUtils (findClipAt, computeTotalDuration, formatTimecode)
+- [ ] 10-02-PLAN.md — Store actions (setPlayheadTime, setIsPlaying) + Space bar toggle + timeline cursor sync
+- [ ] 10-03-PLAN.md — usePreview hook + PreviewPanel component + AppShell integration + visual verification
 
 ### Phase 11: Clip Settings UI + Polish
 **Goal**: All per-clip settings from Phase 6 have UI controls in ClipSettingsPanel and bulk-apply to multi-selected clips; the editor UI is polished to an iMovie-style three-panel layout
@@ -124,10 +125,7 @@ Plans:
   1. ClipSettingsPanel shows speed preset buttons (0.25x/0.5x/1x/2x/4x), rotation picker (0/90/180/270), volume slider (0-200%), hue slider, and flip H/V toggles for the selected clip
   2. All clip settings controls apply to all selected clips when multiple are selected
   3. The editor presents an iMovie-style three-panel layout: preview (center-top), settings sidebar (right), timeline (bottom) with consistent spacing and button styling
-**Plans**: 2 plans
-Plans:
-- [ ] 07-01-PLAN.md — Store action (setWaveformPeaks) + extractPeaks utility with tests
-- [ ] 07-02-PLAN.md — useWaveformExtractor hook + WaveformCanvas renderer + visual verification
+**Plans**: [To be planned]
 
 ## Progress
 
@@ -144,5 +142,5 @@ Plans:
 | 7. Waveform Infrastructure | 2/2 | Complete   | 2026-03-18 | - |
 | 8. Timeline Zoom | 2/2 | Complete   | 2026-03-18 | - |
 | 9. Multi-Clip Selection | 2/2 | Complete   | 2026-03-18 | - |
-| 10. Preview Panel | v1.1 | 0/TBD | Not started | - |
+| 10. Preview Panel | v1.1 | 0/3 | Not started | - |
 | 11. Clip Settings UI + Polish | v1.1 | 0/TBD | Not started | - |
