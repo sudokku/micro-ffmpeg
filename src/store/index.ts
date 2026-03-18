@@ -152,7 +152,7 @@ export const useStore = create<StoreState>()(
 
       selectClip: (clipId) => {
         const state = get()
-        set({ ui: { ...state.ui, selectedClipId: clipId } })
+        set({ ui: { ...state.ui, selectedClipId: clipId, selectedClipIds: [] } })
       },
 
       setActiveTool: (tool) => {
@@ -209,11 +209,64 @@ export const useStore = create<StoreState>()(
         const clamped = Math.min(400, Math.max(5, pps))
         set({ ui: { ...state.ui, pixelsPerSecond: clamped } })
       },
+
+      toggleClipSelection: (clipId) => {
+        const state = get()
+        const ids = state.ui.selectedClipIds
+        const next = ids.includes(clipId)
+          ? ids.filter((id) => id !== clipId)
+          : [...ids, clipId]
+        set({ ui: { ...state.ui, selectedClipId: clipId, selectedClipIds: next } })
+      },
+
+      clearSelection: () => {
+        const state = get()
+        set({ ui: { ...state.ui, selectedClipId: null, selectedClipIds: [] } })
+      },
+
+      deleteSelectedClips: () => {
+        set((state) => {
+          const ids = new Set(state.ui.selectedClipIds)
+          if (ids.size === 0) return state
+          const remainingClips = Object.fromEntries(
+            Object.entries(state.clips).filter(([id]) => !ids.has(id))
+          )
+          return {
+            clips: remainingClips,
+            tracks: {
+              video: {
+                ...state.tracks.video,
+                clipIds: state.tracks.video.clipIds.filter((id) => !ids.has(id)),
+              },
+              audio: {
+                ...state.tracks.audio,
+                clipIds: state.tracks.audio.clipIds.filter((id) => !ids.has(id)),
+              },
+            },
+            ui: { ...state.ui, selectedClipId: null, selectedClipIds: [] },
+          }
+        })
+      },
+
+      bulkUpdateClipSettings: (ids, patch) => {
+        set((state) => {
+          const updated = { ...state.clipSettings }
+          for (const id of ids) {
+            const existing = updated[id] ?? {
+              clipId: id, blur: 0, brightness: 0, contrast: 1, saturation: 1,
+              crop: null, resize: null, speed: 1 as const, rotation: 0 as const,
+              volume: 1.0, hue: 0, flipH: false, flipV: false,
+            }
+            updated[id] = { ...existing, ...patch }
+          }
+          return { clipSettings: updated }
+        })
+      },
     }),
     {
       partialize: (state): TrackedState => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { ui, export: _export, addClip, moveClip, trimClip, splitClip, deleteClip, selectClip, setActiveTool, updateClipSettings, setExportStatus, setExportProgress, setWaveformPeaks, setPixelsPerSecond, ...tracked } = state
+        const { ui, export: _export, addClip, moveClip, trimClip, splitClip, deleteClip, selectClip, setActiveTool, updateClipSettings, setExportStatus, setExportProgress, setWaveformPeaks, setPixelsPerSecond, toggleClipSelection, clearSelection, deleteSelectedClips, bulkUpdateClipSettings, ...tracked } = state
         return tracked
       },
     },

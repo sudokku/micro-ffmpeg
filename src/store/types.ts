@@ -65,6 +65,10 @@ export interface StoreActions {
   setExportProgress: (progress: number) => void
   setWaveformPeaks: (clipId: string, peaks: WaveformBar[]) => void
   setPixelsPerSecond: (pps: number) => void
+  toggleClipSelection: (clipId: string) => void
+  clearSelection: () => void
+  deleteSelectedClips: () => void
+  bulkUpdateClipSettings: (ids: string[], patch: Partial<Omit<ClipSettings, 'clipId'>>) => void
 }
 
 export interface StoreState extends StoreActions {

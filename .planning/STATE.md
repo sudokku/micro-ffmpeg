@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Preview & Polish
 status: completed
-stopped_at: Phase 9 context gathered
-last_updated: "2026-03-18T18:31:59.672Z"
+stopped_at: Completed 09-multi-clip-selection-02-PLAN.md
+last_updated: "2026-03-18T20:42:36.106Z"
 last_activity: "2026-03-18 — Phase 7 plan 02 complete: waveform hook and Audacity-style canvas renderer"
 progress:
   total_phases: 7
-  completed_phases: 4
-  total_plans: 7
-  completed_plans: 7
+  completed_phases: 5
+  total_plans: 9
+  completed_plans: 9
   percent: 57
 ---
 
@@ -56,6 +56,8 @@ Progress: [████░░░░░░] 57% (v1.1)
 | Phase 07-waveform-infrastructure P02 | 8 | 2 tasks | 5 files |
 | Phase 08-timeline-zoom P01 | 5 | 1 tasks | 3 files |
 | Phase 08-timeline-zoom P02 | 8 | 2 tasks | 2 files |
+| Phase 09-multi-clip-selection P01 | 7 | 2 tasks | 3 files |
+| Phase 09-multi-clip-selection P02 | 12 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -87,6 +89,11 @@ Recent decisions affecting current work:
 - [Phase 08-timeline-zoom]: scale={1} + scaleWidth={pixelsPerSecond} makes scaleWidth directly equal pixels-per-second
 - [Phase 08-timeline-zoom]: START_LEFT=20 matches DEFAULT_START_LEFT in @xzdarcy library for correct cursor-time calculation
 - [Phase 08-timeline-zoom]: onWheel on outer container div for reliable modifier+scroll interception with e.preventDefault()
+- [Phase 09-multi-clip-selection]: toggleClipSelection keeps selectedClipId set to toggled id even on deselection (anchor for range-select)
+- [Phase 09-multi-clip-selection]: deleteSelectedClips is no-op when selectedClipIds empty (avoids spurious Zundo history entry)
+- [Phase 09-multi-clip-selection]: selectClip now clears selectedClipIds to enforce single-click single-select invariant
+- [Phase 09-multi-clip-selection]: onClickRow cast as never for untyped @xzdarcy prop — runtime supports it but TS types don't export it
+- [Phase 09-multi-clip-selection]: Fan-out pattern in ClipSettingsPanel: check selectedClipIds.length > 1 then bulk, else single
 
 ### Pending Todos
 
@@ -98,6 +105,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-18T18:31:59.662Z
-Stopped at: Phase 9 context gathered
-Resume file: .planning/phases/09-multi-clip-selection/09-CONTEXT.md
+Last session: 2026-03-18T19:03:10.406Z
+Stopped at: Completed 09-multi-clip-selection-02-PLAN.md
+Resume file: None

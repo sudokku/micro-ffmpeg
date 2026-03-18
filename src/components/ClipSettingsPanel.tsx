@@ -7,6 +7,8 @@ export function ClipSettingsPanel() {
   const clip = useStore((s) => (selectedClipId ? s.clips[selectedClipId] : undefined))
   const settings = useStore((s) => (selectedClipId ? s.clipSettings[selectedClipId] : undefined))
   const updateClipSettings = useStore((s) => s.updateClipSettings)
+  const selectedClipIds = useStore((s) => s.ui.selectedClipIds)
+  const bulkUpdateClipSettings = useStore((s) => s.bulkUpdateClipSettings)
 
   // Local drag state for sliders (commit-on-release pattern)
   const [localBlur, setLocalBlur] = useState<number | null>(null)
@@ -49,25 +51,45 @@ export function ClipSettingsPanel() {
   // Commit handler helpers
   function commitBlur(value: string) {
     const parsed = parseInt(value, 10)
-    if (!isNaN(parsed)) updateClipSettings(clipId, { blur: parsed })
+    if (isNaN(parsed)) return
+    if (selectedClipIds.length > 1) {
+      bulkUpdateClipSettings(selectedClipIds, { blur: parsed })
+    } else {
+      updateClipSettings(clipId, { blur: parsed })
+    }
     setLocalBlur(null)
   }
 
   function commitBrightness(value: string) {
     const parsed = parseFloat(value)
-    if (!isNaN(parsed)) updateClipSettings(clipId, { brightness: parsed })
+    if (isNaN(parsed)) return
+    if (selectedClipIds.length > 1) {
+      bulkUpdateClipSettings(selectedClipIds, { brightness: parsed })
+    } else {
+      updateClipSettings(clipId, { brightness: parsed })
+    }
     setLocalBrightness(null)
   }
 
   function commitContrast(value: string) {
     const parsed = parseFloat(value)
-    if (!isNaN(parsed)) updateClipSettings(clipId, { contrast: parsed })
+    if (isNaN(parsed)) return
+    if (selectedClipIds.length > 1) {
+      bulkUpdateClipSettings(selectedClipIds, { contrast: parsed })
+    } else {
+      updateClipSettings(clipId, { contrast: parsed })
+    }
     setLocalContrast(null)
   }
 
   function commitSaturation(value: string) {
     const parsed = parseFloat(value)
-    if (!isNaN(parsed)) updateClipSettings(clipId, { saturation: parsed })
+    if (isNaN(parsed)) return
+    if (selectedClipIds.length > 1) {
+      bulkUpdateClipSettings(selectedClipIds, { saturation: parsed })
+    } else {
+      updateClipSettings(clipId, { saturation: parsed })
+    }
     setLocalSaturation(null)
   }
 
@@ -76,14 +98,14 @@ export function ClipSettingsPanel() {
     const parsed = parseInt(value, 10)
     if (isNaN(parsed)) return
     const currentCrop = {
-      x: cropX,
-      y: cropY,
-      width: cropWidth,
-      height: cropHeight,
+      x: cropX, y: cropY, width: cropWidth, height: cropHeight,
     }
-    updateClipSettings(clipId, {
-      crop: { ...currentCrop, [field]: parsed },
-    })
+    const newCrop = { ...currentCrop, [field]: parsed }
+    if (selectedClipIds.length > 1) {
+      bulkUpdateClipSettings(selectedClipIds, { crop: newCrop })
+    } else {
+      updateClipSettings(clipId, { crop: newCrop })
+    }
   }
 
   // Resize change handler with aspect ratio lock
@@ -108,15 +130,24 @@ export function ClipSettingsPanel() {
       }
     }
 
-    updateClipSettings(clipId, { resize: { width: newWidth, height: newHeight } })
+    if (selectedClipIds.length > 1) {
+      bulkUpdateClipSettings(selectedClipIds, { resize: { width: newWidth, height: newHeight } })
+    } else {
+      updateClipSettings(clipId, { resize: { width: newWidth, height: newHeight } })
+    }
   }
 
   return (
     <div className="flex-none w-60 bg-zinc-900 border-l border-zinc-800 flex flex-col overflow-y-auto">
       {/* Header */}
-      <h3 className="text-sm font-medium text-zinc-300 truncate px-3 py-2 border-b border-zinc-800">
-        {clip.sourceFile.name}
-      </h3>
+      <div className="flex items-center justify-between px-3 py-2 border-b border-zinc-800">
+        <h3 className="text-sm font-medium text-zinc-300 truncate">{clip.sourceFile.name}</h3>
+        {selectedClipIds.length > 1 && (
+          <span className="ml-2 flex-shrink-0 text-xs font-medium text-zinc-400 bg-zinc-800 rounded px-1.5 py-0.5">
+            {selectedClipIds.length} clips
+          </span>
+        )}
+      </div>
 
       {/* Filters section */}
       <div className="px-3 pt-3 pb-1 text-xs font-semibold text-zinc-400 uppercase tracking-wide">

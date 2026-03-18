@@ -25,7 +25,7 @@
 - [x] **Phase 6: Filter Graph** — Add speed/rotation/volume/hue/flip to the ffmpeg filter pipeline (completed 2026-03-17)
 - [x] **Phase 7: Waveform Infrastructure** — Extract and render audio waveforms on timeline clips (completed 2026-03-18)
 - [x] **Phase 8: Timeline Zoom** — Wire +/- buttons and modifier+scroll zoom to the timeline (completed 2026-03-18)
-- [ ] **Phase 9: Multi-Clip Selection** — Cmd/Ctrl+click multi-select with bulk delete, settings, and drag
+- [x] **Phase 9: Multi-Clip Selection** — Cmd/Ctrl+click multi-select with bulk delete, settings, and drag (completed 2026-03-18)
 - [ ] **Phase 10: Preview Panel** — Live canvas preview with play/pause, timecode, and playhead sync
 - [ ] **Phase 11: Clip Settings UI + Polish** — Speed/rotation/volume/hue/flip controls and iMovie-style UI
 
@@ -99,8 +99,8 @@ Plans:
   4. Dragging one selected clip moves all selected clips together by the same delta
 **Plans**: 2 plans
 Plans:
-- [ ] 07-01-PLAN.md — Store action (setWaveformPeaks) + extractPeaks utility with tests
-- [ ] 07-02-PLAN.md — useWaveformExtractor hook + WaveformCanvas renderer + visual verification
+- [ ] 09-01-PLAN.md — Store actions (toggleClipSelection, clearSelection, deleteSelectedClips, bulkUpdateClipSettings) + tests
+- [ ] 09-02-PLAN.md — Wire multi-select into TimelinePanel, bulk delete into keyboard shortcuts, fan-out + badge into ClipSettingsPanel
 
 ### Phase 10: Preview Panel
 **Goal**: Users can see the current timeline frame rendered live in the preview panel and play back the timeline with audio
@@ -143,6 +143,6 @@ Plans:
 | 6. Filter Graph | 2/2 | Complete   | 2026-03-17 | - |
 | 7. Waveform Infrastructure | 2/2 | Complete   | 2026-03-18 | - |
 | 8. Timeline Zoom | 2/2 | Complete   | 2026-03-18 | - |
-| 9. Multi-Clip Selection | v1.1 | 0/TBD | Not started | - |
+| 9. Multi-Clip Selection | 2/2 | Complete   | 2026-03-18 | - |
 | 10. Preview Panel | v1.1 | 0/TBD | Not started | - |
 | 11. Clip Settings UI + Polish | v1.1 | 0/TBD | Not started | - |

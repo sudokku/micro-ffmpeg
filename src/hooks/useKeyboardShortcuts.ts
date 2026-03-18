@@ -41,12 +41,14 @@ export function useKeyboardShortcuts() {
       }
 
       // Clip deletion — Delete or Backspace
-      // deleteClip also clears selectedClipId in one set() call to avoid a double undo step
-      if ((e.key === 'Delete' || e.key === 'Backspace') && useStore.getState().ui.selectedClipId) {
-        e.preventDefault()
-        const clipId = useStore.getState().ui.selectedClipId
-        if (clipId) {
-          useStore.getState().deleteClip(clipId)
+      if (e.key === 'Delete' || e.key === 'Backspace') {
+        const { selectedClipIds, selectedClipId } = useStore.getState().ui
+        if (selectedClipIds.length > 0) {
+          e.preventDefault()
+          useStore.getState().deleteSelectedClips()
+        } else if (selectedClipId) {
+          e.preventDefault()
+          useStore.getState().deleteClip(selectedClipId)
         }
       }
     }

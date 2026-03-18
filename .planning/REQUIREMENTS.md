@@ -40,10 +40,10 @@
 
 ### Multi-Clip Selection (SEL)
 
-- [ ] **SEL-01**: User can select multiple clips via Cmd/Ctrl+click
-- [ ] **SEL-02**: User can delete all selected clips at once (Backspace)
-- [ ] **SEL-03**: User can apply clip settings to all selected clips simultaneously
-- [ ] **SEL-04**: User can move selected clips together by dragging one
+- [x] **SEL-01**: User can select multiple clips via Cmd/Ctrl+click
+- [x] **SEL-02**: User can delete all selected clips at once (Backspace)
+- [x] **SEL-03**: User can apply clip settings to all selected clips simultaneously
+- ⏸ **SEL-04**: ~~User can move selected clips together by dragging one~~ *(deferred to v2.0 — library has no native group-drag; manual delta approach feasible but 60fps Zustand writes need perf validation; not critical for v1.1)*
 
 ### Clip Settings (CLIP)
 
@@ -104,10 +104,10 @@
 | ZOOM-01 | Phase 8 | Complete |
 | ZOOM-02 | Phase 8 | Complete |
 | ZOOM-03 | Phase 8 | Complete |
-| SEL-01 | Phase 9 | Pending |
-| SEL-02 | Phase 9 | Pending |
-| SEL-03 | Phase 9 | Pending |
-| SEL-04 | Phase 9 | Pending |
+| SEL-01 | Phase 9 | Complete |
+| SEL-02 | Phase 9 | Complete |
+| SEL-03 | Phase 9 | Complete |
+| SEL-04 | v2.0 | Deferred |
 | CLIP-01 | Phase 6 (filter) / Phase 11 (UI) | Complete |
 | CLIP-02 | Phase 6 (filter) / Phase 11 (UI) | Complete |
 | CLIP-03 | Phase 6 (filter) / Phase 11 (UI) | Complete |

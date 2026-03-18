@@ -34,6 +34,9 @@ export function TimelinePanel() {
   const trimClip = useStore((s) => s.trimClip)
   const splitClip = useStore((s) => s.splitClip)
   const selectClip = useStore((s) => s.selectClip)
+  const selectedClipIds = useStore((s) => s.ui.selectedClipIds)
+  const toggleClipSelection = useStore((s) => s.toggleClipSelection)
+  const clearSelection = useStore((s) => s.clearSelection)
   const setPixelsPerSecond = useStore((s) => s.setPixelsPerSecond)
 
   const containerRef = useRef<HTMLDivElement>(null)
@@ -60,14 +63,16 @@ export function TimelinePanel() {
   )
 
   const handleClickAction = useCallback(
-    (_e: React.MouseEvent, param: { action: TimelineAction; row: TimelineRow; time: number }) => {
+    (e: React.MouseEvent, param: { action: TimelineAction; row: TimelineRow; time: number }) => {
       if (activeTool === 'blade') {
         splitClip(param.action.id, param.time)
+      } else if (e.metaKey || e.ctrlKey) {
+        toggleClipSelection(param.action.id)
       } else {
         selectClip(param.action.id)
       }
     },
-    [activeTool, splitClip, selectClip]
+    [activeTool, splitClip, selectClip, toggleClipSelection]
   )
 
   const cursorClass = activeTool === 'blade' ? 'cursor-crosshair' : 'cursor-pointer'
@@ -79,12 +84,19 @@ export function TimelinePanel() {
       return (
         <ClipAction
           clip={clip}
-          isSelected={selectedClipId === clip.id}
+          isSelected={selectedClipId === clip.id || selectedClipIds.includes(clip.id)}
           cursorClass={cursorClass}
         />
       )
     },
-    [clips, selectedClipId, cursorClass]
+    [clips, selectedClipId, selectedClipIds, cursorClass]
+  )
+
+  const handleClickRow = useCallback(
+    (_e: React.MouseEvent, _param: { row: TimelineRow; time: number }) => {
+      clearSelection()
+    },
+    [clearSelection]
   )
 
   const handleZoomIn = useCallback(() => {
@@ -160,6 +172,7 @@ export function TimelinePanel() {
           onActionMoveEnd={handleActionMoveEnd}
           onActionResizeEnd={handleActionResizeEnd}
           onClickAction={handleClickAction}
+          onClickRow={handleClickRow as never}
           getActionRender={getActionRender}
           style={{ height: '100%', width: '100%', backgroundColor: '#191b1d' }}
         />

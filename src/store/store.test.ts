@@ -550,6 +550,153 @@ describe('setPixelsPerSecond', () => {
   })
 })
 
+describe('Multi-clip selection actions', () => {
+  const mockFile = new File([], 'test.mp4')
+
+  it('toggleClipSelection adds c1 to selectedClipIds and sets selectedClipId to c1', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().toggleClipSelection(clipId)
+    const { ui } = useStore.getState()
+    expect(ui.selectedClipIds).toEqual([clipId])
+    expect(ui.selectedClipId).toBe(clipId)
+  })
+
+  it('toggleClipSelection called twice with different ids builds array', () => {
+    useStore.getState().addClip(mockFile, 'video', 5)
+    useStore.getState().addClip(mockFile, 'video', 5)
+    const clipIds = useStore.getState().tracks.video.clipIds
+    const [id1, id2] = clipIds
+    useStore.getState().toggleClipSelection(id1)
+    useStore.getState().toggleClipSelection(id2)
+    const { ui } = useStore.getState()
+    expect(ui.selectedClipIds).toEqual([id1, id2])
+    expect(ui.selectedClipId).toBe(id2)
+  })
+
+  it('toggleClipSelection called twice with same id removes it', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().toggleClipSelection(clipId)
+    useStore.getState().toggleClipSelection(clipId)
+    const { ui } = useStore.getState()
+    expect(ui.selectedClipIds).toEqual([])
+    expect(ui.selectedClipId).toBe(clipId)
+  })
+
+  it('toggleClipSelection is NOT reverted by undo', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    useStore.getState().toggleClipSelection(clipId)
+    useStore.temporal.getState().undo()
+    expect(useStore.getState().ui.selectedClipIds).toContain(clipId)
+  })
+
+  it('clearSelection sets selectedClipId to null and selectedClipIds to []', () => {
+    useStore.setState({
+      ui: {
+        ...useStore.getState().ui,
+        selectedClipId: 'c1',
+        selectedClipIds: ['c1', 'c2'],
+      },
+    })
+    useStore.getState().clearSelection()
+    const { ui } = useStore.getState()
+    expect(ui.selectedClipId).toBeNull()
+    expect(ui.selectedClipIds).toEqual([])
+  })
+
+  it('selectClip clears selectedClipIds to [] (single-click invariant)', () => {
+    useStore.setState({
+      ui: {
+        ...useStore.getState().ui,
+        selectedClipIds: ['c1', 'c2'],
+      },
+    })
+    useStore.getState().selectClip('c3')
+    const { ui } = useStore.getState()
+    expect(ui.selectedClipIds).toEqual([])
+    expect(ui.selectedClipId).toBe('c3')
+  })
+
+  it('deleteSelectedClips removes all clips in selectedClipIds', () => {
+    useStore.getState().addClip(mockFile, 'video', 5)
+    useStore.getState().addClip(mockFile, 'video', 5)
+    const clipIds = useStore.getState().tracks.video.clipIds
+    useStore.setState({ ui: { ...useStore.getState().ui, selectedClipIds: [...clipIds] } })
+    useStore.getState().deleteSelectedClips()
+    const { clips, tracks, ui } = useStore.getState()
+    expect(clips).toEqual({})
+    expect(tracks.video.clipIds).toEqual([])
+    expect(ui.selectedClipId).toBeNull()
+    expect(ui.selectedClipIds).toEqual([])
+  })
+
+  it('deleteSelectedClips with empty selectedClipIds is a no-op', () => {
+    useStore.getState().addClip(mockFile, 'video', 10)
+    const clipId = Object.keys(useStore.getState().clips)[0]
+    // selectedClipIds defaults to []
+    useStore.getState().deleteSelectedClips()
+    expect(useStore.getState().clips[clipId]).toBeDefined()
+  })
+
+  it('single undo after deleteSelectedClips restores all clips', () => {
+    useStore.getState().addClip(mockFile, 'video', 5)
+    useStore.getState().addClip(mockFile, 'video', 5)
+    const clipIds = [...useStore.getState().tracks.video.clipIds]
+    useStore.setState({ ui: { ...useStore.getState().ui, selectedClipIds: clipIds } })
+    useStore.temporal.getState().clear()
+    useStore.getState().deleteSelectedClips()
+    useStore.temporal.getState().undo()
+    const { clips, tracks } = useStore.getState()
+    expect(clips[clipIds[0]]).toBeDefined()
+    expect(clips[clipIds[1]]).toBeDefined()
+    expect(tracks.video.clipIds).toContain(clipIds[0])
+    expect(tracks.video.clipIds).toContain(clipIds[1])
+  })
+
+  it('deleteSelectedClips removes clips from both video and audio tracks', () => {
+    useStore.getState().addClip(mockFile, 'video', 5)
+    useStore.getState().addClip(mockFile, 'audio', 5)
+    const videoId = useStore.getState().tracks.video.clipIds[0]
+    const audioId = useStore.getState().tracks.audio.clipIds[0]
+    useStore.setState({ ui: { ...useStore.getState().ui, selectedClipIds: [videoId, audioId] } })
+    useStore.getState().deleteSelectedClips()
+    expect(useStore.getState().tracks.video.clipIds).toEqual([])
+    expect(useStore.getState().tracks.audio.clipIds).toEqual([])
+  })
+
+  it('bulkUpdateClipSettings applies patch to all specified ids', () => {
+    useStore.getState().addClip(mockFile, 'video', 5)
+    useStore.getState().addClip(mockFile, 'video', 5)
+    const [id1, id2] = useStore.getState().tracks.video.clipIds
+    useStore.getState().bulkUpdateClipSettings([id1, id2], { blur: 5 })
+    expect(useStore.getState().clipSettings[id1].blur).toBe(5)
+    expect(useStore.getState().clipSettings[id2].blur).toBe(5)
+  })
+
+  it('bulkUpdateClipSettings creates default settings for clips without existing settings', () => {
+    useStore.getState().addClip(mockFile, 'video', 5)
+    useStore.getState().addClip(mockFile, 'video', 5)
+    const [id1, id2] = useStore.getState().tracks.video.clipIds
+    useStore.getState().bulkUpdateClipSettings([id1, id2], { volume: 0.5 })
+    expect(useStore.getState().clipSettings[id1].volume).toBe(0.5)
+    expect(useStore.getState().clipSettings[id1].blur).toBe(0)
+    expect(useStore.getState().clipSettings[id2].volume).toBe(0.5)
+  })
+
+  it('single undo after bulkUpdateClipSettings reverts all settings', () => {
+    useStore.getState().addClip(mockFile, 'video', 5)
+    useStore.getState().addClip(mockFile, 'video', 5)
+    const [id1, id2] = useStore.getState().tracks.video.clipIds
+    useStore.temporal.getState().clear()
+    useStore.getState().bulkUpdateClipSettings([id1, id2], { blur: 7 })
+    useStore.temporal.getState().undo()
+    expect(useStore.getState().clipSettings[id1]).toBeUndefined()
+    expect(useStore.getState().clipSettings[id2]).toBeUndefined()
+  })
+})
+
 describe('export actions', () => {
   it('setExportStatus sets export.status to "rendering"', () => {
     useStore.getState().setExportStatus('rendering')
