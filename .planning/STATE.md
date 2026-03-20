@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Preview & Polish
 status: completed
-stopped_at: Phase 10 context gathered
-last_updated: "2026-03-18T21:58:47.746Z"
-last_activity: "2026-03-18 — Phase 7 plan 02 complete: waveform hook and Audacity-style canvas renderer"
+stopped_at: Phase 11 context gathered
+last_updated: "2026-03-20T01:22:12.581Z"
+last_activity: "2026-03-19 — Phase 10 plan 01 complete: preview utility functions (buildCanvasFilter, findClipAt, computeTotalDuration, formatTimecode)"
 progress:
   total_phases: 7
-  completed_phases: 5
-  total_plans: 9
-  completed_plans: 9
+  completed_phases: 6
+  total_plans: 12
+  completed_plans: 12
   percent: 57
 ---
 
@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-03-17)
 
 ## Current Position
 
-Phase: 7 of 11 overall (3 of 7 in v1.1) — COMPLETE
-Plan: 02 of 02 — complete
-Status: Phase 7 done, ready for Phase 8
-Last activity: 2026-03-18 — Phase 7 plan 02 complete: waveform hook and Audacity-style canvas renderer
+Phase: 10 of 11 overall (6 of 7 in v1.1) — IN PROGRESS
+Plan: 01 of 03 — complete
+Status: Phase 10 Plan 01 done, ready for Plan 02 (usePreview hook)
+Last activity: 2026-03-19 — Phase 10 plan 01 complete: preview utility functions (buildCanvasFilter, findClipAt, computeTotalDuration, formatTimecode)
 
 Progress: [████░░░░░░] 57% (v1.1)
 
@@ -58,6 +58,7 @@ Progress: [████░░░░░░] 57% (v1.1)
 | Phase 08-timeline-zoom P02 | 8 | 2 tasks | 2 files |
 | Phase 09-multi-clip-selection P01 | 7 | 2 tasks | 3 files |
 | Phase 09-multi-clip-selection P02 | 12 | 2 tasks | 3 files |
+| Phase 10-preview-panel P02 | 15 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -94,6 +95,15 @@ Recent decisions affecting current work:
 - [Phase 09-multi-clip-selection]: selectClip now clears selectedClipIds to enforce single-click single-select invariant
 - [Phase 09-multi-clip-selection]: onClickRow cast as never for untyped @xzdarcy prop — runtime supports it but TS types don't export it
 - [Phase 09-multi-clip-selection]: Fan-out pattern in ClipSettingsPanel: check selectedClipIds.length > 1 then bulk, else single
+- [Phase 10-preview-panel P01]: buildCanvasFilter maps blur to blur(N*2px), brightness to brightness(1+offset), saturation to saturate(N), hue to hue-rotate(Ndeg); returns 'none' for defaults
+- [Phase 10-preview-panel P01]: findClipAt uses endTime-exclusive boundary (startTime <= t < endTime) so clips can abut without overlap ambiguity
+- [Phase 10-preview-panel P01]: formatTimecode uses MM:SS with no hours column (3600s = 60:00 not 1:00:00) — per plan spec
+- [Phase 10-preview-panel]: setPlayheadTime/setIsPlaying use get()+set({ui:...}) pattern — excluded from Zundo via partialize
+- [Phase 10-preview-panel]: onClickTimeArea seeks + pauses (setIsPlaying(false)) per plan spec
+- [Phase 10-preview-panel]: useEffect(setTime, [playheadTime]) for store-to-cursor sync — no feedback loop
+- [Phase 10-preview-panel]: usePreview called inside PreviewPanel (not AppShell) — hook needs canvasRef which lives in PreviewPanel
+- [Phase 10-preview-panel]: Video elements not muted — audio from video clips plays naturally through the video element; audio-track clips use HTMLAudioElement
+- [Phase 10-preview-panel]: Scrub mode uses seeked event (once:true) for frame-accurate canvas draw; playback mode only seeks if drift > 0.3s
 
 ### Pending Todos
 
@@ -105,6 +115,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-18T21:58:47.734Z
-Stopped at: Phase 10 context gathered
-Resume file: .planning/phases/10-preview-panel/10-CONTEXT.md
+Last session: 2026-03-20T01:22:12.578Z
+Stopped at: Phase 11 context gathered
+Resume file: .planning/phases/11-clip-settings-ui-polish/11-CONTEXT.md
