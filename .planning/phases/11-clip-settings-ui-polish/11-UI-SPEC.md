@@ -55,13 +55,13 @@ Exceptions:
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
 | Body / slider labels | 12px (text-xs) | 400 (normal) | 1.5 |
-| UI labels / buttons | 14px (text-sm) | 500 (medium) | 1.4 |
+| UI labels / buttons | 14px (text-sm) | 400 (normal) | 1.4 |
 | Section headings | 12px (text-xs) | 600 (semibold) | 1.2 |
 | Display / empty state | 20px (text-xl) | 600 (semibold) | 1.2 |
 
 Notes:
 - Exactly 3 sizes in active use: 12px, 14px, 20px. A 4th (section header) reuses 12px at semibold — differentiated by weight and `uppercase tracking-wide`, not size.
-- Weights: 400 (normal) for data labels/body copy; 600 (semibold) for section headers and empty state heading; 500 (medium) for button text. Two effective weights used for non-header text.
+- Weights: 400 (normal) for body copy, data labels, and button text; 600 (semibold) for section headers and empty state heading.
 - Section header pattern established in existing code: `text-xs font-semibold text-zinc-400 uppercase tracking-wide` — all new section headers (PLAYBACK, TRANSFORM) must use this exact class string.
 
 **Source:** Codebase scan of `ClipSettingsPanel.tsx`, `TopBar.tsx`, `EmptyState.tsx`.
@@ -103,7 +103,7 @@ Used for Speed and Rotation controls. Built inline in `ClipSettingsPanel.tsx`.
 
 Interaction contract:
 - Render as a `<div className="flex rounded overflow-hidden border border-zinc-700">` containing `<button>` elements
-- Each button: `flex-1 text-xs py-1.5 font-medium transition-colors`
+- Each button: `flex-1 text-xs py-1.5 font-normal transition-colors`
 - Inactive: `bg-zinc-800 text-zinc-300 hover:bg-zinc-700`
 - Active (matches store value): `bg-blue-600 text-white`
 - Immediate commit on click (no local state needed — discrete values)
@@ -119,7 +119,7 @@ Two side-by-side icon+label toggle buttons for Flip H and Flip V.
 
 Interaction contract:
 - Render as `<div className="flex gap-2">` with two `<button>` elements
-- Each button: `flex items-center gap-1 px-2 py-1.5 rounded text-xs font-medium transition-colors`
+- Each button: `flex items-center gap-1 px-2 py-1.5 rounded text-xs font-normal transition-colors`
 - Inactive: `bg-zinc-800 text-zinc-300 hover:bg-zinc-700`
 - Active: `bg-blue-600 text-white`
 - Use Lucide `FlipHorizontal` and `FlipVertical` icons (size 14)
