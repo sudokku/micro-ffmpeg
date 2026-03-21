@@ -2,16 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Preview & Polish
-status: completed
-stopped_at: Phase 11 context gathered
-last_updated: "2026-03-20T01:22:12.581Z"
-last_activity: "2026-03-19 — Phase 10 plan 01 complete: preview utility functions (buildCanvasFilter, findClipAt, computeTotalDuration, formatTimecode)"
+status: unknown
+stopped_at: Completed 11-01-PLAN.md
+last_updated: "2026-03-21T22:30:59.171Z"
 progress:
   total_phases: 7
-  completed_phases: 6
-  total_plans: 12
-  completed_plans: 12
-  percent: 57
+  completed_phases: 7
+  total_plans: 14
+  completed_plans: 14
 ---
 
 # Project State
@@ -21,20 +19,17 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-17)
 
 **Core value:** Timeline + store work perfectly: clip edits reflect instantly, undo/redo is flawless, export faithfully renders what the timeline shows
-**Current focus:** Milestone v1.1 — Phase 7: Waveform Infrastructure COMPLETE
+**Current focus:** Phase 11 — clip-settings-ui-polish
 
 ## Current Position
 
-Phase: 10 of 11 overall (6 of 7 in v1.1) — IN PROGRESS
-Plan: 01 of 03 — complete
-Status: Phase 10 Plan 01 done, ready for Plan 02 (usePreview hook)
-Last activity: 2026-03-19 — Phase 10 plan 01 complete: preview utility functions (buildCanvasFilter, findClipAt, computeTotalDuration, formatTimecode)
-
-Progress: [████░░░░░░] 57% (v1.1)
+Phase: 11
+Plan: Not started
 
 ## Performance Metrics
 
 **Velocity:**
+
 - Total plans completed: 0 (v1.1)
 - Average duration: —
 - Total execution time: 0 hours
@@ -46,6 +41,7 @@ Progress: [████░░░░░░] 57% (v1.1)
 | - | - | - | - |
 
 **Recent Trend:**
+
 - Last 5 plans: —
 - Trend: —
 
@@ -59,6 +55,7 @@ Progress: [████░░░░░░] 57% (v1.1)
 | Phase 09-multi-clip-selection P01 | 7 | 2 tasks | 3 files |
 | Phase 09-multi-clip-selection P02 | 12 | 2 tasks | 3 files |
 | Phase 10-preview-panel P02 | 15 | 2 tasks | 5 files |
+| Phase 11-clip-settings-ui-polish P01 | 8 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -104,6 +101,8 @@ Recent decisions affecting current work:
 - [Phase 10-preview-panel]: usePreview called inside PreviewPanel (not AppShell) — hook needs canvasRef which lives in PreviewPanel
 - [Phase 10-preview-panel]: Video elements not muted — audio from video clips plays naturally through the video element; audio-track clips use HTMLAudioElement
 - [Phase 10-preview-panel]: Scrub mode uses seeked event (once:true) for frame-accurate canvas draw; playback mode only seeks if drift > 0.3s
+- [Phase 11]: Volume stored as float (1.0=100%) but displayed as integer percent (0-200); divide by 100 on commit
+- [Phase 11]: Audio guard (isAudio = clip.trackId === 'audio') wraps TRANSFORM+FILTERS+CROP+RESIZE in one !isAudio block
 
 ### Pending Todos
 
@@ -115,6 +114,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T01:22:12.578Z
-Stopped at: Phase 11 context gathered
-Resume file: .planning/phases/11-clip-settings-ui-polish/11-CONTEXT.md
+Last session: 2026-03-21T22:26:07.838Z
+Stopped at: Completed 11-01-PLAN.md
+Resume file: None

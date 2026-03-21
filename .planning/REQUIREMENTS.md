@@ -23,10 +23,10 @@
 
 ### Preview (PREV)
 
-- [ ] **PREV-01**: User can see the current timeline frame rendered in the central preview panel
-- [ ] **PREV-02**: User can play/pause timeline playback with audio
-- [ ] **PREV-03**: User can see a timecode display (HH:MM:SS) in the preview panel
-- [ ] **PREV-04**: User can see per-clip filters (blur/brightness/contrast/saturation/crop) reflected live in the preview canvas
+- [x] **PREV-01**: User can see the current timeline frame rendered in the central preview panel
+- [x] **PREV-02**: User can play/pause timeline playback with audio
+- [x] **PREV-03**: User can see a timecode display (HH:MM:SS) in the preview panel
+- [x] **PREV-04**: User can see per-clip filters (blur/brightness/contrast/saturation/crop) reflected live in the preview canvas
 
 ### Waveform (WAVE)
 
@@ -55,7 +55,7 @@
 
 ### UI Polish (UI)
 
-- [ ] **UI-01**: User sees a focused iMovie-style UI polish (preview panel layout, sidebar, timeline appearance, buttons)
+- [x] **UI-01**: User sees a focused iMovie-style UI polish (preview panel layout, sidebar, timeline appearance, buttons)
 
 ## v2 Requirements
 
@@ -96,10 +96,10 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PREV-01 | Phase 10 | Pending |
-| PREV-02 | Phase 10 | Pending |
-| PREV-03 | Phase 10 | Pending |
-| PREV-04 | Phase 10 | Pending |
+| PREV-01 | Phase 10 | Complete |
+| PREV-02 | Phase 10 | Complete |
+| PREV-03 | Phase 10 | Complete |
+| PREV-04 | Phase 10 | Complete |
 | WAVE-01 | Phase 7 | Complete |
 | ZOOM-01 | Phase 8 | Complete |
 | ZOOM-02 | Phase 8 | Complete |
@@ -113,7 +113,7 @@
 | CLIP-03 | Phase 6 (filter) / Phase 11 (UI) | Complete |
 | CLIP-04 | Phase 6 (filter) / Phase 11 (UI) | Complete |
 | CLIP-05 | Phase 6 (filter) / Phase 11 (UI) | Complete |
-| UI-01 | Phase 11 | Pending |
+| UI-01 | Phase 11 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 18 total

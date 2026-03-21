@@ -26,8 +26,8 @@
 - [x] **Phase 7: Waveform Infrastructure** — Extract and render audio waveforms on timeline clips (completed 2026-03-18)
 - [x] **Phase 8: Timeline Zoom** — Wire +/- buttons and modifier+scroll zoom to the timeline (completed 2026-03-18)
 - [x] **Phase 9: Multi-Clip Selection** — Cmd/Ctrl+click multi-select with bulk delete, settings, and drag (completed 2026-03-18)
-- [ ] **Phase 10: Preview Panel** — Live canvas preview with play/pause, timecode, and playhead sync
-- [ ] **Phase 11: Clip Settings UI + Polish** — Speed/rotation/volume/hue/flip controls and iMovie-style UI
+- [x] **Phase 10: Preview Panel** — Live canvas preview with play/pause, timecode, and playhead sync (completed 2026-03-18)
+- [x] **Phase 11: Clip Settings UI + Polish** — Speed/rotation/volume/hue/flip controls and iMovie-style UI (completed 2026-03-21)
 
 ## Phase Details
 
@@ -125,7 +125,10 @@ Plans:
   1. ClipSettingsPanel shows speed preset buttons (0.25x/0.5x/1x/2x/4x), rotation picker (0/90/180/270), volume slider (0-200%), hue slider, and flip H/V toggles for the selected clip
   2. All clip settings controls apply to all selected clips when multiple are selected
   3. The editor presents an iMovie-style three-panel layout: preview (center-top), settings sidebar (right), timeline (bottom) with consistent spacing and button styling
-**Plans**: [To be planned]
+**Plans**: 2 plans
+Plans:
+- [x] 11-01-PLAN.md — Add PLAYBACK + TRANSFORM sections to ClipSettingsPanel, audio guard, width/height layout changes
+- [x] 11-02-PLAN.md — Extend tests for new controls + visual verification checkpoint
 
 ## Progress
 
@@ -142,5 +145,5 @@ Plans:
 | 7. Waveform Infrastructure | 2/2 | Complete   | 2026-03-18 | - |
 | 8. Timeline Zoom | 2/2 | Complete   | 2026-03-18 | - |
 | 9. Multi-Clip Selection | 2/2 | Complete   | 2026-03-18 | - |
-| 10. Preview Panel | v1.1 | 0/3 | Not started | - |
-| 11. Clip Settings UI + Polish | v1.1 | 0/TBD | Not started | - |
+| 10. Preview Panel | 3/3 | Complete   | 2026-03-18 | - |
+| 11. Clip Settings UI + Polish | v1.1 | 2/2 | Complete    | 2026-03-21 |

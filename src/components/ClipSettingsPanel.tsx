@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Lock, Unlock } from 'lucide-react'
+import { Lock, Unlock, FlipHorizontal, FlipVertical } from 'lucide-react'
 import { useStore } from '../store'
 
 export function ClipSettingsPanel() {
@@ -15,13 +15,15 @@ export function ClipSettingsPanel() {
   const [localBrightness, setLocalBrightness] = useState<number | null>(null)
   const [localContrast, setLocalContrast] = useState<number | null>(null)
   const [localSaturation, setLocalSaturation] = useState<number | null>(null)
+  const [localVolume, setLocalVolume] = useState<number | null>(null)
+  const [localHue, setLocalHue] = useState<number | null>(null)
 
   // Aspect ratio lock state (on by default)
   const [aspectLocked, setAspectLocked] = useState<boolean>(true)
 
   if (!selectedClipId || !clip) {
     return (
-      <div className="flex-none w-60 bg-zinc-900 border-l border-zinc-800 flex items-center justify-center p-4">
+      <div className="flex-none w-70 bg-zinc-900 border-l border-zinc-800 flex items-center justify-center p-4">
         <p className="text-zinc-500 text-sm text-center">Select a clip to edit its settings</p>
       </div>
     )
@@ -31,12 +33,15 @@ export function ClipSettingsPanel() {
   const clipId = selectedClipId
   const sourceWidth = clip.sourceWidth
   const sourceHeight = clip.sourceHeight
+  const isAudio = clip.trackId === 'audio'
 
   // Display values for sliders: local drag value ?? store value ?? default
   const blurDisplay = localBlur ?? settings?.blur ?? 0
   const brightnessDisplay = localBrightness ?? settings?.brightness ?? 0
   const contrastDisplay = localContrast ?? settings?.contrast ?? 1.0
   const saturationDisplay = localSaturation ?? settings?.saturation ?? 1.0
+  const volumeDisplay = localVolume ?? Math.round((settings?.volume ?? 1.0) * 100)
+  const hueDisplay = localHue ?? (settings?.hue ?? 0)
 
   // Crop display values: use stored crop or default to source dimensions
   const cropX = settings?.crop?.x ?? 0
@@ -93,6 +98,54 @@ export function ClipSettingsPanel() {
     setLocalSaturation(null)
   }
 
+  function commitSpeed(value: 0.25 | 0.5 | 1 | 2 | 4) {
+    if (selectedClipIds.length > 1) {
+      bulkUpdateClipSettings(selectedClipIds, { speed: value })
+    } else {
+      updateClipSettings(clipId, { speed: value })
+    }
+  }
+
+  function commitRotation(value: 0 | 90 | 180 | 270) {
+    if (selectedClipIds.length > 1) {
+      bulkUpdateClipSettings(selectedClipIds, { rotation: value })
+    } else {
+      updateClipSettings(clipId, { rotation: value })
+    }
+  }
+
+  function commitVolume(value: string) {
+    const parsed = parseInt(value, 10)
+    if (isNaN(parsed)) return
+    const storeVal = parsed / 100
+    if (selectedClipIds.length > 1) {
+      bulkUpdateClipSettings(selectedClipIds, { volume: storeVal })
+    } else {
+      updateClipSettings(clipId, { volume: storeVal })
+    }
+    setLocalVolume(null)
+  }
+
+  function commitHue(value: string) {
+    const parsed = parseInt(value, 10)
+    if (isNaN(parsed)) return
+    if (selectedClipIds.length > 1) {
+      bulkUpdateClipSettings(selectedClipIds, { hue: parsed })
+    } else {
+      updateClipSettings(clipId, { hue: parsed })
+    }
+    setLocalHue(null)
+  }
+
+  function commitFlip(field: 'flipH' | 'flipV', current: boolean) {
+    const next = !current
+    if (selectedClipIds.length > 1) {
+      bulkUpdateClipSettings(selectedClipIds, { [field]: next })
+    } else {
+      updateClipSettings(clipId, { [field]: next })
+    }
+  }
+
   // Crop change handler
   function handleCropChange(field: 'x' | 'y' | 'width' | 'height', value: string) {
     const parsed = parseInt(value, 10)
@@ -138,7 +191,7 @@ export function ClipSettingsPanel() {
   }
 
   return (
-    <div className="flex-none w-60 bg-zinc-900 border-l border-zinc-800 flex flex-col overflow-y-auto">
+    <div className="flex-none w-70 bg-zinc-900 border-l border-zinc-800 flex flex-col overflow-y-auto">
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-zinc-800">
         <h3 className="text-sm font-medium text-zinc-300 truncate">{clip.sourceFile.name}</h3>
@@ -149,178 +202,303 @@ export function ClipSettingsPanel() {
         )}
       </div>
 
-      {/* Filters section */}
+      {/* PLAYBACK section */}
       <div className="px-3 pt-3 pb-1 text-xs font-semibold text-zinc-400 uppercase tracking-wide">
-        Filters
+        Playback
       </div>
 
-      {/* Blur slider */}
+      {/* Speed segmented row */}
       <div className="px-3 py-1.5">
         <div className="flex justify-between text-xs text-zinc-400 mb-1">
-          <span>Blur</span>
-          <span>{blurDisplay}</span>
+          <span>Speed</span>
+        </div>
+        <div className="flex rounded overflow-hidden border border-zinc-700">
+          {([0.25, 0.5, 1, 2, 4] as const).map((v) => (
+            <button
+              key={v}
+              onClick={() => commitSpeed(v)}
+              className={`flex-1 text-xs py-1.5 font-normal transition-colors ${
+                (settings?.speed ?? 1) === v
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+              }`}
+            >
+              {v}x
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Volume slider */}
+      <div className="px-3 py-1.5">
+        <div className="flex justify-between text-xs text-zinc-400 mb-1">
+          <span>Volume</span>
+          <span>{volumeDisplay}%</span>
         </div>
         <input
           type="range"
           min={0}
-          max={10}
-          step={1}
-          value={blurDisplay}
-          onChange={(e) => setLocalBlur(parseInt(e.target.value, 10))}
-          onPointerUp={(e) => commitBlur((e.target as HTMLInputElement).value)}
-          onTouchEnd={(e) => commitBlur((e.target as HTMLInputElement).value)}
+          max={200}
+          step={5}
+          value={volumeDisplay}
+          onChange={(e) => setLocalVolume(parseInt(e.target.value, 10))}
+          onPointerUp={(e) => commitVolume((e.target as HTMLInputElement).value)}
+          onTouchEnd={(e) => commitVolume((e.target as HTMLInputElement).value)}
           className="w-full"
           style={{ accentColor: '#3b82f6' }}
         />
       </div>
 
-      {/* Brightness slider */}
-      <div className="px-3 py-1.5">
-        <div className="flex justify-between text-xs text-zinc-400 mb-1">
-          <span>Brightness</span>
-          <span>{brightnessDisplay.toFixed(2)}</span>
-        </div>
-        <input
-          type="range"
-          min={-1.0}
-          max={1.0}
-          step={0.05}
-          value={brightnessDisplay}
-          onChange={(e) => setLocalBrightness(parseFloat(e.target.value))}
-          onPointerUp={(e) => commitBrightness((e.target as HTMLInputElement).value)}
-          onTouchEnd={(e) => commitBrightness((e.target as HTMLInputElement).value)}
-          className="w-full"
-          style={{ accentColor: '#3b82f6' }}
-        />
-      </div>
+      {!isAudio && (
+        <>
+          {/* TRANSFORM section */}
+          <div className="px-3 pt-3 pb-1 text-xs font-semibold text-zinc-400 uppercase tracking-wide">
+            Transform
+          </div>
 
-      {/* Contrast slider */}
-      <div className="px-3 py-1.5">
-        <div className="flex justify-between text-xs text-zinc-400 mb-1">
-          <span>Contrast</span>
-          <span>{contrastDisplay.toFixed(2)}</span>
-        </div>
-        <input
-          type="range"
-          min={0.0}
-          max={2.0}
-          step={0.05}
-          value={contrastDisplay}
-          onChange={(e) => setLocalContrast(parseFloat(e.target.value))}
-          onPointerUp={(e) => commitContrast((e.target as HTMLInputElement).value)}
-          onTouchEnd={(e) => commitContrast((e.target as HTMLInputElement).value)}
-          className="w-full"
-          style={{ accentColor: '#3b82f6' }}
-        />
-      </div>
+          {/* Rotation segmented row */}
+          <div className="px-3 py-1.5">
+            <div className="flex justify-between text-xs text-zinc-400 mb-1">
+              <span>Rotation</span>
+            </div>
+            <div className="flex rounded overflow-hidden border border-zinc-700">
+              {([0, 90, 180, 270] as const).map((v) => (
+                <button
+                  key={v}
+                  onClick={() => commitRotation(v)}
+                  className={`flex-1 text-xs py-1.5 font-normal transition-colors ${
+                    (settings?.rotation ?? 0) === v
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                  }`}
+                >
+                  {v}°
+                </button>
+              ))}
+            </div>
+          </div>
 
-      {/* Saturation slider */}
-      <div className="px-3 py-1.5">
-        <div className="flex justify-between text-xs text-zinc-400 mb-1">
-          <span>Saturation</span>
-          <span>{saturationDisplay.toFixed(2)}</span>
-        </div>
-        <input
-          type="range"
-          min={0.0}
-          max={3.0}
-          step={0.05}
-          value={saturationDisplay}
-          onChange={(e) => setLocalSaturation(parseFloat(e.target.value))}
-          onPointerUp={(e) => commitSaturation((e.target as HTMLInputElement).value)}
-          onTouchEnd={(e) => commitSaturation((e.target as HTMLInputElement).value)}
-          className="w-full"
-          style={{ accentColor: '#3b82f6' }}
-        />
-      </div>
+          {/* Flip H/V buttons */}
+          <div className="px-3 py-1.5">
+            <div className="flex justify-between text-xs text-zinc-400 mb-1">
+              <span>Flip</span>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => commitFlip('flipH', settings?.flipH ?? false)}
+                className={`flex items-center gap-1 px-2 py-1.5 rounded text-xs font-normal transition-colors ${
+                  (settings?.flipH ?? false) ? 'bg-blue-600 text-white' : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                }`}
+              >
+                <FlipHorizontal size={14} />
+                H
+              </button>
+              <button
+                onClick={() => commitFlip('flipV', settings?.flipV ?? false)}
+                className={`flex items-center gap-1 px-2 py-1.5 rounded text-xs font-normal transition-colors ${
+                  (settings?.flipV ?? false) ? 'bg-blue-600 text-white' : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                }`}
+              >
+                <FlipVertical size={14} />
+                V
+              </button>
+            </div>
+          </div>
 
-      {/* Crop section */}
-      <div className="px-3 pt-3 pb-1 text-xs font-semibold text-zinc-400 uppercase tracking-wide">
-        Crop
-      </div>
-      <div className="px-3 pb-2 grid grid-cols-2 gap-2">
-        <div>
-          <label className="text-xs text-zinc-400">X</label>
-          <input
-            type="number"
-            min={0}
-            value={cropX}
-            onChange={(e) => handleCropChange('x', e.target.value)}
-            className="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-white"
-          />
-        </div>
-        <div>
-          <label className="text-xs text-zinc-400">Y</label>
-          <input
-            type="number"
-            min={0}
-            value={cropY}
-            onChange={(e) => handleCropChange('y', e.target.value)}
-            className="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-white"
-          />
-        </div>
-        <div>
-          <label className="text-xs text-zinc-400">Width</label>
-          <input
-            type="number"
-            min={0}
-            value={cropWidth}
-            onChange={(e) => handleCropChange('width', e.target.value)}
-            className="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-white"
-          />
-        </div>
-        <div>
-          <label className="text-xs text-zinc-400">Height</label>
-          <input
-            type="number"
-            min={0}
-            value={cropHeight}
-            onChange={(e) => handleCropChange('height', e.target.value)}
-            className="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-white"
-          />
-        </div>
-      </div>
-
-      {/* Resize section */}
-      <div className="px-3 pt-3 pb-1 text-xs font-semibold text-zinc-400 uppercase tracking-wide">
-        Resize
-      </div>
-      <div className="px-3 pb-3">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="flex-1">
-            <label className="text-xs text-zinc-400">Width</label>
+          {/* Hue slider */}
+          <div className="px-3 py-1.5">
+            <div className="flex justify-between text-xs text-zinc-400 mb-1">
+              <span>Hue</span>
+              <span>{hueDisplay}°</span>
+            </div>
             <input
-              type="number"
-              min={1}
-              value={resizeWidth}
-              onChange={(e) => handleResizeChange('width', e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-white"
+              type="range"
+              min={-180}
+              max={180}
+              step={1}
+              value={hueDisplay}
+              onChange={(e) => setLocalHue(parseInt(e.target.value, 10))}
+              onPointerUp={(e) => commitHue((e.target as HTMLInputElement).value)}
+              onTouchEnd={(e) => commitHue((e.target as HTMLInputElement).value)}
+              className="w-full"
+              style={{ accentColor: '#3b82f6' }}
             />
           </div>
-          <div className="flex-1">
-            <label className="text-xs text-zinc-400">Height</label>
+
+          {/* Filters section */}
+          <div className="px-3 pt-3 pb-1 text-xs font-semibold text-zinc-400 uppercase tracking-wide">
+            Filters
+          </div>
+
+          {/* Blur slider */}
+          <div className="px-3 py-1.5">
+            <div className="flex justify-between text-xs text-zinc-400 mb-1">
+              <span>Blur</span>
+              <span>{blurDisplay}</span>
+            </div>
             <input
-              type="number"
-              min={1}
-              value={resizeHeight}
-              onChange={(e) => handleResizeChange('height', e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-white"
+              type="range"
+              min={0}
+              max={10}
+              step={1}
+              value={blurDisplay}
+              onChange={(e) => setLocalBlur(parseInt(e.target.value, 10))}
+              onPointerUp={(e) => commitBlur((e.target as HTMLInputElement).value)}
+              onTouchEnd={(e) => commitBlur((e.target as HTMLInputElement).value)}
+              className="w-full"
+              style={{ accentColor: '#3b82f6' }}
             />
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setAspectLocked(!aspectLocked)}
-            className="p-1 rounded hover:bg-zinc-700"
-            aria-label={aspectLocked ? 'Lock aspect ratio' : 'Unlock aspect ratio'}
-          >
-            {aspectLocked ? <Lock size={14} /> : <Unlock size={14} />}
-          </button>
-          <span className="text-xs text-zinc-500">
-            {aspectLocked ? 'Aspect ratio locked' : 'Aspect ratio unlocked'}
-          </span>
-        </div>
-      </div>
+
+          {/* Brightness slider */}
+          <div className="px-3 py-1.5">
+            <div className="flex justify-between text-xs text-zinc-400 mb-1">
+              <span>Brightness</span>
+              <span>{brightnessDisplay.toFixed(2)}</span>
+            </div>
+            <input
+              type="range"
+              min={-1.0}
+              max={1.0}
+              step={0.05}
+              value={brightnessDisplay}
+              onChange={(e) => setLocalBrightness(parseFloat(e.target.value))}
+              onPointerUp={(e) => commitBrightness((e.target as HTMLInputElement).value)}
+              onTouchEnd={(e) => commitBrightness((e.target as HTMLInputElement).value)}
+              className="w-full"
+              style={{ accentColor: '#3b82f6' }}
+            />
+          </div>
+
+          {/* Contrast slider */}
+          <div className="px-3 py-1.5">
+            <div className="flex justify-between text-xs text-zinc-400 mb-1">
+              <span>Contrast</span>
+              <span>{contrastDisplay.toFixed(2)}</span>
+            </div>
+            <input
+              type="range"
+              min={0.0}
+              max={2.0}
+              step={0.05}
+              value={contrastDisplay}
+              onChange={(e) => setLocalContrast(parseFloat(e.target.value))}
+              onPointerUp={(e) => commitContrast((e.target as HTMLInputElement).value)}
+              onTouchEnd={(e) => commitContrast((e.target as HTMLInputElement).value)}
+              className="w-full"
+              style={{ accentColor: '#3b82f6' }}
+            />
+          </div>
+
+          {/* Saturation slider */}
+          <div className="px-3 py-1.5">
+            <div className="flex justify-between text-xs text-zinc-400 mb-1">
+              <span>Saturation</span>
+              <span>{saturationDisplay.toFixed(2)}</span>
+            </div>
+            <input
+              type="range"
+              min={0.0}
+              max={3.0}
+              step={0.05}
+              value={saturationDisplay}
+              onChange={(e) => setLocalSaturation(parseFloat(e.target.value))}
+              onPointerUp={(e) => commitSaturation((e.target as HTMLInputElement).value)}
+              onTouchEnd={(e) => commitSaturation((e.target as HTMLInputElement).value)}
+              className="w-full"
+              style={{ accentColor: '#3b82f6' }}
+            />
+          </div>
+
+          {/* Crop section */}
+          <div className="px-3 pt-3 pb-1 text-xs font-semibold text-zinc-400 uppercase tracking-wide">
+            Crop
+          </div>
+          <div className="px-3 pb-2 grid grid-cols-2 gap-2">
+            <div>
+              <label className="text-xs text-zinc-400">X</label>
+              <input
+                type="number"
+                min={0}
+                value={cropX}
+                onChange={(e) => handleCropChange('x', e.target.value)}
+                className="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-white"
+              />
+            </div>
+            <div>
+              <label className="text-xs text-zinc-400">Y</label>
+              <input
+                type="number"
+                min={0}
+                value={cropY}
+                onChange={(e) => handleCropChange('y', e.target.value)}
+                className="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-white"
+              />
+            </div>
+            <div>
+              <label className="text-xs text-zinc-400">Width</label>
+              <input
+                type="number"
+                min={0}
+                value={cropWidth}
+                onChange={(e) => handleCropChange('width', e.target.value)}
+                className="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-white"
+              />
+            </div>
+            <div>
+              <label className="text-xs text-zinc-400">Height</label>
+              <input
+                type="number"
+                min={0}
+                value={cropHeight}
+                onChange={(e) => handleCropChange('height', e.target.value)}
+                className="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-white"
+              />
+            </div>
+          </div>
+
+          {/* Resize section */}
+          <div className="px-3 pt-3 pb-1 text-xs font-semibold text-zinc-400 uppercase tracking-wide">
+            Resize
+          </div>
+          <div className="px-3 pb-3">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="flex-1">
+                <label className="text-xs text-zinc-400">Width</label>
+                <input
+                  type="number"
+                  min={1}
+                  value={resizeWidth}
+                  onChange={(e) => handleResizeChange('width', e.target.value)}
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-white"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="text-xs text-zinc-400">Height</label>
+                <input
+                  type="number"
+                  min={1}
+                  value={resizeHeight}
+                  onChange={(e) => handleResizeChange('height', e.target.value)}
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-xs text-white"
+                />
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setAspectLocked(!aspectLocked)}
+                className="p-1 rounded hover:bg-zinc-700"
+                aria-label={aspectLocked ? 'Lock aspect ratio' : 'Unlock aspect ratio'}
+              >
+                {aspectLocked ? <Lock size={14} /> : <Unlock size={14} />}
+              </button>
+              <span className="text-xs text-zinc-500">
+                {aspectLocked ? 'Aspect ratio locked' : 'Aspect ratio unlocked'}
+              </span>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }

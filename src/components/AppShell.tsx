@@ -3,9 +3,9 @@ import { TopBar } from './TopBar'
 import { ToolSidebar } from './ToolSidebar'
 import { TimelinePanel } from './TimelinePanel'
 import { DropOverlay } from './DropOverlay'
-import { EmptyState } from './EmptyState'
 import { ClipSettingsPanel } from './ClipSettingsPanel'
 import { ExportProgressBar } from './ExportProgressBar'
+import { PreviewPanel } from './PreviewPanel'
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts'
 import { useFileImport } from '../hooks/useFileImport'
 import { useThumbnailExtractor } from '../hooks/useThumbnailExtractor'
@@ -40,16 +40,12 @@ export function AppShell() {
       <ExportProgressBar />
       <div className={`flex flex-row flex-1 overflow-hidden ${isExporting ? 'pointer-events-none opacity-50' : ''}`}>
         <ToolSidebar />
-        <main className="flex-1 flex items-center justify-center">
-          {hasClips ? (
-            <span className="text-zinc-600 text-sm">Clip settings — Phase 3</span>
-          ) : (
-            <EmptyState />
-          )}
+        <main className="flex-1 flex flex-col overflow-hidden">
+          <PreviewPanel />
         </main>
         <ClipSettingsPanel />
       </div>
-      <div className={`flex-none border-t border-zinc-800 ${isExporting ? 'pointer-events-none opacity-50' : ''}`} style={{ height: '37vh' }}>
+      <div className={`flex-none border-t border-zinc-800 ${isExporting ? 'pointer-events-none opacity-50' : ''}`} style={{ height: '28vh' }}>
         <TimelinePanel />
       </div>
       <DropOverlay visible={showOverlay} />
