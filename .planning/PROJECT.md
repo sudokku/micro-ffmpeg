@@ -37,12 +37,15 @@ The timeline + store work perfectly: clip edits reflect instantly in the Zustand
 - [ ] User can delete all selected clips at once (SEL-02)
 - [ ] User can apply clip settings to all selected clips simultaneously (SEL-03)
 - [ ] User can move selected clips together by dragging one (SEL-04)
-- [ ] User can set per-clip playback speed (0.25×/0.5×/1×/2×/4×) (CLIP-01)
-- [ ] User can set per-clip rotation (preset angles: 0°/90°/180°/270°) (CLIP-02)
-- [ ] User can set per-clip volume (CLIP-03)
-- [ ] User can set per-clip hue shift (CLIP-04)
-- [ ] User can flip a clip horizontally or vertically (CLIP-05)
-- [ ] User sees a polished iMovie-style UI (preview panel, sidebar, timeline, buttons) (UI-01)
+
+### Validated in Phase 11: clip-settings-ui-polish
+
+- ✓ User can set per-clip playback speed (0.25×/0.5×/1×/2×/4×) (CLIP-01)
+- ✓ User can set per-clip rotation (preset angles: 0°/90°/180°/270°) (CLIP-02)
+- ✓ User can set per-clip volume (CLIP-03)
+- ✓ User can set per-clip hue shift (CLIP-04)
+- ✓ User can flip a clip horizontally or vertically (CLIP-05)
+- ✓ User sees a polished iMovie-style UI (wider sidebar 280px, shorter timeline 28vh) (UI-01)
 
 ### Out of Scope
 
@@ -98,4 +101,4 @@ The timeline component is a pure controlled display: reads from Zustand store, f
 - Focused UI polish (iMovie-style: preview layout, sidebar, timeline, buttons)
 
 ---
-*Last updated: 2026-03-17 — v1.1 milestone started*
+*Last updated: 2026-03-22 — Phase 11 complete (clip settings UI polish)*
